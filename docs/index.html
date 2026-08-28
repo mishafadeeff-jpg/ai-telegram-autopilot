@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Путь Веры - У каждого свой крест</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes divine-glow {
+      0%, 100% { filter: drop-shadow(0 0 25px rgba(251, 191, 36, 0.8)); }
+      50% { filter: drop-shadow(0 0 60px rgba(251, 191, 36, 1)); }
+    }
+    .glow-divine { animation: divine-glow 2.5s infinite ease-in-out; }
+    @keyframes card-in {
+      0% { transform: scale(0.85) translateY(20px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .card-zoom {
+      animation: card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes scroll-open {
+      0% { transform: scaleY(0); opacity: 0; }
+      100% { transform: scaleY(1); opacity: 1; }
+    }
+    .scroll-anim { animation: scroll-open 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col items-center justify-between p-3 md:p-4 selection:bg-amber-500 selection:text-black">
+
+  <!-- TOP BAR: Header & Quote -->
+  <header class="w-full max-w-5xl flex flex-col md:flex-row items-center justify-between gap-3 py-3 px-5 bg-slate-900/90 border border-amber-500/30 rounded-2xl backdrop-blur-md shadow-2xl shadow-amber-500/10">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 flex items-center justify-center text-2xl shadow-lg shadow-amber-500/40">
+        ☦️
+      </div>
+      <div>
+        <h1 class="text-lg md:text-xl font-bold bg-gradient-to-r from-amber-300 via-yellow-100 to-amber-400 bg-clip-text text-transparent">
+          Путь Веры: Несение Креста
+        </h1>
+        <p class="text-xs text-amber-200/80 font-serif italic tracking-wide">
+          «У каждого свой крест... Но с любовью и верой мы донесем его до вершины»
+        </p>
+      </div>
+    </div>
+
+    <!-- Live Progress Display in Stars -->
+    <div class="flex items-center gap-5">
+      <div class="text-right">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Собрано</div>
+        <div class="text-xl md:text-2xl font-black text-amber-400 font-mono tracking-tight flex items-center justify-end gap-1">
+          <span id="amount-text">0</span> <span class="text-yellow-400">⭐</span> <span class="text-slate-500 text-sm font-normal">/ 50k ⭐</span>
+        </div>
+      </div>
+      <div class="h-10 w-[2px] bg-slate-800 hidden md:block"></div>
+      <div class="text-right">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Путь к вершине</div>
+        <div class="text-xl md:text-2xl font-black text-yellow-300 font-mono" id="percent-text">0.0%</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN INTERACTIVE CANVAS VIEW -->
+  <main class="w-full max-w-5xl my-3 relative rounded-3xl overflow-hidden border-2 border-amber-500/40 shadow-2xl bg-gradient-to-b from-indigo-950 via-slate-900 to-stone-950 flex flex-col">
+    
+    <!-- Permanent Motto Overlay on Canvas Top Center -->
+    <div class="absolute top-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none text-center">
+      <div class="px-5 py-1.5 rounded-full bg-slate-950/80 border border-amber-500/30 backdrop-blur-md shadow-xl">
+        <span class="text-amber-300 font-serif tracking-widest text-xs md:text-sm uppercase font-semibold drop-shadow-[0_2px_8px_rgba(245,158,11,0.5)]">
+          ☦️ У каждого свой крест ☦️
+        </span>
+      </div>
+    </div>
+
+    <!-- FULL-SCREEN CLOSE-UP CINEMATIC OVERLAY -->
+    <div id="closeup-overlay" class="absolute inset-0 z-20 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-between p-4 md:p-6 opacity-0 pointer-events-none transition-opacity duration-500">
+      
+      <!-- Speech & Blessing Banner Top -->
+      <div class="w-full max-w-lg bg-gradient-to-r from-amber-100 via-yellow-50 to-amber-100 text-slate-950 p-4 rounded-2xl shadow-2xl border-2 border-amber-400 text-center card-zoom mt-2">
+        <div class="text-amber-800 text-[11px] uppercase tracking-wider mb-1 font-mono flex items-center justify-center gap-1 font-bold">
+          <span>🕊️</span> <span>Батюшка благодарит вас:</span>
+        </div>
+        <div id="closeup-speech-text" class="text-slate-950 font-serif leading-relaxed text-sm md:text-base font-medium">
+          «Спаси тебя Господь, Михаил! Низкий тебе поклон за доброе сердце! 🙏»
+        </div>
+      </div>
+
+      <!-- High-Fidelity Close-Up Portrait Canvas of Pilgrim -->
+      <div class="relative flex-1 w-full max-w-md flex items-center justify-center my-2">
+        <canvas id="portrait-canvas" class="w-full h-full max-h-[300px] block"></canvas>
+      </div>
+
+      <!-- Payer Badge Bottom -->
+      <div class="px-6 py-2 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs md:text-sm font-serif backdrop-blur-sm shadow-lg mb-1">
+        ✨ Благословение от чистого сердца для <span id="closeup-payer-name" class="font-bold text-yellow-300">Михаила</span> ✨
+      </div>
+    </div>
+
+    <!-- SOLEMN CLIMAX VICTORY SCREEN: GLORIFICATION OF GOD & DONORS SCROLL -->
+    <div id="victory-modal" class="absolute inset-0 z-30 bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-6 text-center opacity-0 pointer-events-none transition-opacity duration-1000 overflow-y-auto">
+      
+      <div class="flex flex-col items-center max-w-2xl mt-4">
+        <div class="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-4xl mb-3 glow-divine">
+          ☦️
+        </div>
+        <h2 class="text-3xl md:text-4xl font-black text-amber-300 font-serif tracking-tight mb-1">
+          СЛАВА БОГУ ЗА ВСЁ!
+        </h2>
+        <p class="text-amber-200/90 text-sm md:text-base font-serif italic mb-4">
+          «Слава в вышних Богу, и на земле мир, в человеках благоволение!»
+        </p>
+      </div>
+
+      <!-- Golden Holy Scroll of Donors -->
+      <div class="w-full max-w-xl bg-gradient-to-b from-amber-100 via-amber-50 to-yellow-100 text-slate-950 p-5 rounded-2xl shadow-2xl border-4 border-amber-500/60 my-2 scroll-anim">
+        <div class="text-amber-900 font-serif font-black text-base md:text-lg uppercase tracking-wider mb-2 border-b-2 border-amber-400/50 pb-1">
+          📜 Свиток вечной молитвы и памяти благодетелей
+        </div>
+        <p class="text-xs text-slate-700 mb-3 font-serif">
+          Имена тех, чья любовь и жертва помогли донести крест до вершины:
+        </p>
+        <div id="donors-list" class="flex flex-wrap items-center justify-center gap-2 max-h-36 overflow-y-auto p-2 bg-amber-200/40 rounded-xl border border-amber-300 font-bold text-xs md:text-sm text-slate-900">
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <button onclick="resetCrowdfund()" class="px-8 py-3 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/40 transition transform hover:scale-105 active:scale-95">
+          🔄 Пройти путь заново
+        </button>
+      </div>
+    </div>
+
+    <!-- HTML5 Cartoon Render Canvas (Main Mountain Scene) -->
+    <canvas id="stage" class="w-full h-[450px] md:h-[530px] block cursor-pointer"></canvas>
+
+    <!-- Progress Bar in Stars -->
+    <div class="w-full bg-slate-950 p-3 border-t border-slate-800 flex items-center gap-3">
+      <span class="text-xs font-bold text-amber-500 font-mono">0 ⭐</span>
+      <div class="flex-1 h-4 bg-slate-800 rounded-full overflow-hidden p-0.5 relative">
+        <div id="bar-fill" class="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 rounded-full w-0 transition-all duration-300 shadow-lg shadow-amber-500/50"></div>
+      </div>
+      <span class="text-xs font-bold text-amber-300 font-mono">50k ⭐ ☦️</span>
+    </div>
+  </main>
+
+  <!-- CONTROLS & DONATION IN TELEGRAM STARS ⭐ -->
+  <footer class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-3 pb-2">
+
+    <!-- Card 1: Fast Telegram Stars Buttons -->
+    <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between shadow-lg">
+      <div>
+        <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2 mb-1">
+          <span>⭐</span> Быстрый донат Звёздами (Stars)
+        </h3>
+        <p class="text-xs text-slate-400 mb-3">Батюшка появится во весь экран и благословит:</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="donateQuick(50, 'Свеча 🕯️')" class="py-2.5 px-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 text-slate-200 hover:text-amber-400 font-bold rounded-xl text-xs transition transform active:scale-95 text-center">
+          <div class="text-amber-400 font-mono text-sm font-black">+50 ⭐</div>
+          <div class="text-[10px] text-slate-400">Свеча 🕯️</div>
+        </button>
+        <button onclick="donateQuick(150, 'Глоток воды 💧')" class="py-2.5 px-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 text-slate-200 hover:text-amber-400 font-bold rounded-xl text-xs transition transform active:scale-95 text-center">
+          <div class="text-amber-400 font-mono text-sm font-black">+150 ⭐</div>
+          <div class="text-[10px] text-slate-400">Вода 💧</div>
+        </button>
+        <button onclick="donateQuick(300, 'Помощь 🕊️')" class="py-2.5 px-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 text-slate-200 hover:text-amber-400 font-bold rounded-xl text-xs transition transform active:scale-95 text-center">
+          <div class="text-amber-400 font-mono text-sm font-black">+300 ⭐</div>
+          <div class="text-[10px] text-slate-400">Помощь 🕊️</div>
+        </button>
+        <button onclick="donateQuick(500, 'Сила духа ✨')" class="py-2.5 px-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 text-slate-200 hover:text-amber-400 font-bold rounded-xl text-xs transition transform active:scale-95 text-center">
+          <div class="text-yellow-300 font-mono text-sm font-black">+500 ⭐</div>
+          <div class="text-[10px] text-slate-400">Сила ✨</div>
+        </button>
+        <button onclick="donateQuick(1500, 'Тропа веры 🌟')" class="py-2.5 px-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 text-slate-200 hover:text-amber-400 font-bold rounded-xl text-xs transition transform active:scale-95 text-center">
+          <div class="text-yellow-300 font-mono text-sm font-black">+1.5k ⭐</div>
+          <div class="text-[10px] text-slate-400">Вера 🌟</div>
+        </button>
+        <button onclick="donateQuick(5000, 'Небесный дар 👑')" class="py-2.5 px-2 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-400 text-slate-950 font-black rounded-xl text-xs transition transform active:scale-95 text-center shadow-md shadow-amber-500/30">
+          <div class="text-slate-950 font-mono text-sm font-black">+5k ⭐</div>
+          <div class="text-[10px] text-slate-900 font-bold">Дар 👑</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Card 2: Custom Stars Donation with Name & Note -->
+    <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between shadow-lg">
+      <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2 mb-1">
+        <span>📜</span> Ваше имя и количество Звёзд
+      </h3>
+      <div class="space-y-2">
+        <input id="donor-name" type="text" placeholder="Введите ваше имя" value="Михаил" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
+        <input id="donor-msg" type="text" placeholder="Записка о здравии / спасении..." value="О здравии и мире в семье!" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
+        <div class="flex gap-2">
+          <input id="donor-amt" type="number" placeholder="Звёзд ⭐" value="5000" min="10" max="50000" class="w-1/3 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-amber-500 transition">
+          <button onclick="donateCustom()" class="flex-1 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black rounded-xl text-xs py-1.5 transition transform active:scale-95 shadow-md shadow-amber-500/30">
+            🙏 Отправить Звёзды ⭐
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Telegram Stars & TON Wallet Balance -->
+    <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 border border-amber-500/30 p-4 rounded-2xl flex flex-col justify-between shadow-lg">
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <h3 class="font-bold text-amber-300 text-sm flex items-center gap-2">
+            <span>💎</span> Telegram Stars &amp; TON
+          </h3>
+          <span class="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-500/40">Официально</span>
+        </div>
+        <p class="text-xs text-slate-300 mb-2">
+          Все звёзды мгновенно начисляются вашему Telegram боту и конвертируются в TON на платформе Fragment:
+        </p>
+      </div>
+
+      <div class="space-y-1.5">
+        <div class="bg-slate-950/80 border border-slate-800 p-2 rounded-xl flex items-center justify-between">
+          <div class="text-[11px] text-amber-200 font-mono truncate">Бот: @aipulsedaily_news_bot</div>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded">Подключен</span>
+        </div>
+        <button onclick="triggerTelegramStarsPayment()" class="w-full py-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 hover:from-amber-400 hover:to-yellow-200 text-slate-950 font-black text-xs rounded-xl transition shadow-md shadow-amber-500/30">
+          ⭐ Оплатить Telegram Stars
+        </button>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- JAVASCRIPT: Full-Screen Portrait Close-Up Engine & Priest Voice -->
+  <script>
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+      if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+        const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+        const nameField = document.getElementById('donor-name');
+        if (nameField) {
+          nameField.value = tgUser.first_name || tgUser.username || "Михаил";
+        }
+      }
+    }
+
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+
+    const portraitCanvas = document.getElementById('portrait-canvas');
+    const pCtx = portraitCanvas.getContext('2d');
+
+    let targetAmount = 50000;
+    let currentAmount = 0;
+    let visualProgress = 0;
+    let isVictory = false;
+
+    let donorsHistory = [];
+
+    function getPayerName() {
+      const nameInput = document.getElementById('donor-name');
+      if (nameInput && nameInput.value.trim()) {
+        return nameInput.value.trim();
+      }
+      return "Михаил";
+    }
+
+    let isCloseUp = false;
+    let closeUpTimer = null;
+    let speechStartTime = 0;
+
+    let goldenParticles = [];
+    let clouds = [
+      { x: 50, y: 50, speed: 10, size: 45 },
+      { x: 320, y: 90, speed: 7, size: 60 },
+      { x: 650, y: 35, speed: 14, size: 40 },
+      { x: 880, y: 80, speed: 9, size: 55 }
+    ];
+    let birds = [
+      { x: -50, y: 110, speed: 45, wing: 0 },
+      { x: -120, y: 85, speed: 50, wing: 1.5 }
+    ];
+    let fireflies = [];
+    for (let i = 0; i < 30; i++) {
+      fireflies.push({
+        x: Math.random() * 1000,
+        y: Math.random() * 500,
+        vx: (Math.random() - 0.5) * 15,
+        vy: (Math.random() - 0.5) * 15,
+        size: Math.random() * 2 + 1,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    const PRIEST_BLESSINGS = [
+      "Спаси тебя Господь, {NAME}! Родной ты мой, от всего сердца низкий поклон тебе за добрую душу! Да благословит Господь дом твой, дарует здравие, мир и благодать семье твоей! 🙏",
+      "Мир и благословение дому твоему, {NAME}! Низкий поклон за твое милосердие! Пусть Господь оберегает тебя на всех путях жизни твоей и пошлет крепости духа и радости! 🕊️",
+      "Благословен будь, {NAME}! Спасибо за святую помощь и руку поддержки! Молитва о здравии твоем будет звучать непрестанно! Спаси Христос! ✨",
+      "Храни тебя Господь, {NAME}! Спасибо за твое щедрое и чистое сердце! Да воздаст тебе Господь сторицею за доброе дело твое! 🕯️",
+      "Спаси Бог тебя, {NAME}! Здравия крепкого, мира душевного и небесного покрова тебе и всем сродникам твоим! 💖"
+    ];
+
+    function getKindPriestVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      const maleVoice = voices.find(v => 
+        v.lang.startsWith('ru') && 
+        (v.name.toLowerCase().includes('pavel') || 
+         v.name.toLowerCase().includes('dmitry') || 
+         v.name.toLowerCase().includes('male') || 
+         v.name.toLowerCase().includes('муж'))
+      );
+      if (maleVoice) return maleVoice;
+      const anyRuVoice = voices.find(v => v.lang.startsWith('ru'));
+      return anyRuVoice || null;
+    }
+
+    function speakBlessing(name, blessingText) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const cleanSpeech = blessingText.replace(/[🙏🕊️✨🕯️💖«»]/g, '');
+        const utterance = new SpeechSynthesisUtterance(cleanSpeech);
+        utterance.lang = 'ru-RU';
+        utterance.rate = 0.85; 
+        utterance.pitch = 0.78;
+
+        const priestVoice = getKindPriestVoice();
+        if (priestVoice) utterance.voice = priestVoice;
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function speakVictoryHymn() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const hymnText = "Слава Богу за всё! Слава в вышних Богу, и на земле мир! Хвала и вечная благодарственная молитва за каждого благодетеля, кто помог донести крест до святой вершины! Спаси вас всех Господь! Аминь!";
+        const utterance = new SpeechSynthesisUtterance(hymnText);
+        utterance.lang = 'ru-RU';
+        utterance.rate = 0.82;
+        utterance.pitch = 0.76;
+
+        const priestVoice = getKindPriestVoice();
+        if (priestVoice) utterance.voice = priestVoice;
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playChurchBells(isClimax = false) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      
+      const freqs = isClimax 
+        ? [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]
+        : [440, 554.37, 659.25];
+
+      freqs.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = isClimax ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + index * (isClimax ? 0.2 : 0.1));
+        gain.gain.setValueAtTime(isClimax ? 0.35 : 0.25, audioCtx.currentTime + index * (isClimax ? 0.2 : 0.1));
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + index * (isClimax ? 0.2 : 0.1) + (isClimax ? 4.5 : 1.8));
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + index * (isClimax ? 0.2 : 0.1));
+        osc.stop(audioCtx.currentTime + index * (isClimax ? 0.2 : 0.1) + (isClimax ? 4.5 : 1.8));
+      });
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      const pRect = portraitCanvas.getBoundingClientRect();
+      portraitCanvas.width = pRect.width * window.devicePixelRatio;
+      portraitCanvas.height = pRect.height * window.devicePixelRatio;
+      pCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function donateQuick(amount, label) {
+      const actualName = getPayerName();
+      donate(amount, actualName, label);
+    }
+
+    function donate(amount, donorName, customMsg = "") {
+      if (isVictory) return;
+      playChurchBells(false);
+
+      currentAmount = Math.min(targetAmount, currentAmount + amount);
+
+      donorsHistory.push({ name: donorName, amount: amount });
+      updateDonorsScrollUI();
+
+      const randomTemplate = PRIEST_BLESSINGS[Math.floor(Math.random() * PRIEST_BLESSINGS.length)];
+      const blessing = randomTemplate.replace('{NAME}', donorName);
+
+      isCloseUp = true;
+      speechStartTime = performance.now();
+      showCloseUpModal(donorName, blessing);
+      speakBlessing(donorName, blessing);
+
+      clearTimeout(closeUpTimer);
+      closeUpTimer = setTimeout(() => {
+        isCloseUp = false;
+        hideCloseUpModal();
+      }, 7000);
+
+      for (let i = 0; i < 40; i++) {
+        goldenParticles.push({
+          x: getPilgrimPos().x,
+          y: getPilgrimPos().y - 25,
+          vx: (Math.random() - 0.5) * 7,
+          vy: -Math.random() * 8 - 2,
+          size: Math.random() * 4 + 2,
+          life: 1.0
+        });
+      }
+
+      if (currentAmount >= targetAmount && !isVictory) {
+        triggerVictory();
+      }
+    }
+
+    function donateCustom() {
+      const name = getPayerName();
+      const msg = document.getElementById('donor-msg').value.trim();
+      const amt = parseFloat(document.getElementById('donor-amt').value) || 5000;
+      donate(amt, name, msg);
+    }
+
+    function triggerTelegramStarsPayment() {
+      const name = getPayerName();
+      donate(5000, name, "Telegram Stars Пожертвование ⭐");
+    }
+
+    function updateDonorsScrollUI() {
+      const list = document.getElementById('donors-list');
+      if (!list) return;
+      
+      let html = '';
+      donorsHistory.forEach(d => {
+        html += `<span class="bg-amber-400/40 px-3 py-1 rounded-full border border-amber-500/30">${d.name} (${d.amount.toLocaleString()} ⭐)</span>`;
+      });
+      html += `<span class="bg-amber-400/40 px-3 py-1 rounded-full border border-amber-500/30">Все благодетели 🕊️</span>`;
+      list.innerHTML = html;
+    }
+
+    function showCloseUpModal(name, text) {
+      const overlay = document.getElementById('closeup-overlay');
+      document.getElementById('closeup-speech-text').innerText = text;
+      document.getElementById('closeup-payer-name').innerText = name;
+
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      overlay.classList.add('opacity-100');
+    }
+
+    function hideCloseUpModal() {
+      const overlay = document.getElementById('closeup-overlay');
+      overlay.classList.remove('opacity-100');
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function triggerVictory() {
+      isVictory = true;
+      isCloseUp = false;
+      hideCloseUpModal();
+      playChurchBells(true);
+      speakVictoryHymn();
+
+      const vicModal = document.getElementById('victory-modal');
+      setTimeout(() => {
+        vicModal.classList.remove('opacity-0', 'pointer-events-none');
+        vicModal.classList.add('opacity-100');
+      }, 1000);
+    }
+
+    function resetCrowdfund() {
+      currentAmount = 0;
+      visualProgress = 0;
+      isVictory = false;
+      isCloseUp = false;
+      hideCloseUpModal();
+      const vicModal = document.getElementById('victory-modal');
+      vicModal.classList.remove('opacity-100');
+      vicModal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function getMountainY(x, w, h) {
+      const startY = h * 0.86;
+      const endY = h * 0.35;
+      const t = x / w;
+      return startY - (startY - endY) * Math.pow(t, 0.92);
+    }
+
+    function getPilgrimPos() {
+      const w = canvas.getBoundingClientRect().width;
+      const h = canvas.getBoundingClientRect().height;
+      const startX = w * 0.12;
+      const endX = w * 0.82;
+      const currentX = startX + (endX - startX) * visualProgress;
+      const currentY = getMountainY(currentX, w, h);
+      return { x: currentX, y: currentY };
+    }
+
+    function renderPortrait(timestamp) {
+      const pw = portraitCanvas.getBoundingClientRect().width;
+      const ph = portraitCanvas.getBoundingClientRect().height;
+      pCtx.clearRect(0, 0, pw, ph);
+
+      const cx = pw / 2;
+      const cy = ph * 0.75;
+
+      const breath = Math.sin(timestamp * 0.003) * 2;
+      const handWave = Math.sin(timestamp * 0.004) * 8;
+      const heartGlow = (Math.sin(timestamp * 0.008) + 1) * 0.5;
+
+      const haloRad = 75 + heartGlow * 15;
+      const halo = pCtx.createRadialGradient(cx, cy - 90, 20, cx, cy - 90, haloRad);
+      halo.addColorStop(0, 'rgba(251, 191, 36, 0.85)');
+      halo.addColorStop(0.5, 'rgba(245, 158, 11, 0.45)');
+      halo.addColorStop(1, 'rgba(245, 158, 11, 0)');
+      pCtx.fillStyle = halo;
+      pCtx.beginPath();
+      pCtx.arc(cx, cy - 90, haloRad, 0, Math.PI * 2);
+      pCtx.fill();
+
+      pCtx.fillStyle = '#fef08a';
+      pCtx.beginPath();
+      pCtx.moveTo(cx - 85, ph);
+      pCtx.lineTo(cx - 55, cy - 45 - breath);
+      pCtx.lineTo(cx + 55, cy - 45 - breath);
+      pCtx.lineTo(cx + 85, ph);
+      pCtx.closePath();
+      pCtx.fill();
+
+      pCtx.fillStyle = '#f59e0b';
+      pCtx.fillRect(cx - 16, cy - 45 - breath, 32, ph - (cy - 45));
+
+      pCtx.strokeStyle = '#fef08a';
+      pCtx.lineWidth = 4;
+      pCtx.beginPath();
+      pCtx.moveTo(cx, cy - 25 - breath);
+      pCtx.lineTo(cx, cy + 15 - breath);
+      pCtx.moveTo(cx - 10, cy - 12 - breath);
+      pCtx.lineTo(cx + 10, cy - 12 - breath);
+      pCtx.moveTo(cx - 6, cy + 8 - breath);
+      pCtx.lineTo(cx + 6, cy + 2 - breath);
+      pCtx.stroke();
+
+      pCtx.fillStyle = '#fed7aa';
+      pCtx.beginPath();
+      pCtx.arc(cx, cy - 90 - breath, 32, 0, Math.PI * 2);
+      pCtx.fill();
+
+      pCtx.fillStyle = '#f8fafc';
+      pCtx.beginPath();
+      pCtx.moveTo(cx - 28, cy - 80 - breath);
+      pCtx.quadraticCurveTo(cx, cy - 20 - breath, cx + 28, cy - 80 - breath);
+      pCtx.fill();
+
+      pCtx.fillStyle = '#e2e8f0';
+      pCtx.beginPath();
+      pCtx.arc(cx, cy - 78 - breath, 12, 0, Math.PI);
+      pCtx.fill();
+
+      const isBlink = (Math.floor(timestamp * 0.001) % 4 === 0) && (Math.floor(timestamp * 0.01) % 10 < 2);
+      pCtx.fillStyle = '#1e293b';
+      if (isBlink) {
+        pCtx.strokeStyle = '#1e293b';
+        pCtx.lineWidth = 3;
+        pCtx.beginPath();
+        pCtx.moveTo(cx - 16, cy - 92 - breath);
+        pCtx.lineTo(cx - 6, cy - 92 - breath);
+        pCtx.moveTo(cx + 6, cy - 92 - breath);
+        pCtx.lineTo(cx + 16, cy - 92 - breath);
+        pCtx.stroke();
+      } else {
+        pCtx.beginPath();
+        pCtx.arc(-11 + cx, cy - 92 - breath, 3.5, 0, Math.PI * 2);
+        pCtx.arc(11 + cx, cy - 92 - breath, 3.5, 0, Math.PI * 2);
+        pCtx.fill();
+        pCtx.fillStyle = '#ffffff';
+        pCtx.beginPath();
+        pCtx.arc(-12 + cx, cy - 93 - breath, 1.2, 0, Math.PI * 2);
+        pCtx.arc(10 + cx, cy - 93 - breath, 1.2, 0, Math.PI * 2);
+        pCtx.fill();
+      }
+
+      pCtx.strokeStyle = '#cbd5e1';
+      pCtx.lineWidth = 2.5;
+      pCtx.beginPath();
+      pCtx.arc(cx - 11, cy - 99 - breath, 7, Math.PI * 1.1, Math.PI * 1.9);
+      pCtx.arc(cx + 11, cy - 99 - breath, 7, Math.PI * 1.1, Math.PI * 1.9);
+      pCtx.stroke();
+
+      const lipSync = Math.sin(timestamp * 0.018) * 3;
+      pCtx.fillStyle = '#881337';
+      pCtx.beginPath();
+      if (lipSync > 0.8) {
+        pCtx.ellipse(cx, cy - 72 - breath, 6, 2.5 + lipSync * 1.2, 0, 0, Math.PI * 2);
+      } else {
+        pCtx.arc(cx, cy - 74 - breath, 7, 0, Math.PI);
+      }
+      pCtx.fill();
+
+      pCtx.save();
+      pCtx.translate(cx + 50, cy - 10 + handWave - breath);
+      pCtx.fillStyle = '#fef08a';
+      pCtx.beginPath();
+      pCtx.moveTo(-15, 30);
+      pCtx.lineTo(5, -10);
+      pCtx.lineTo(25, -5);
+      pCtx.lineTo(5, 35);
+      pCtx.closePath();
+      pCtx.fill();
+
+      pCtx.fillStyle = '#fed7aa';
+      pCtx.beginPath();
+      pCtx.arc(15, -15, 12, 0, Math.PI * 2);
+      pCtx.fill();
+
+      pCtx.strokeStyle = '#fed7aa';
+      pCtx.lineWidth = 4.5;
+      pCtx.lineCap = 'round';
+      pCtx.beginPath();
+      pCtx.moveTo(10, -20);
+      pCtx.lineTo(10, -32);
+      pCtx.moveTo(15, -20);
+      pCtx.lineTo(15, -34);
+      pCtx.moveTo(20, -20);
+      pCtx.lineTo(20, -30);
+      pCtx.moveTo(6, -14);
+      pCtx.lineTo(0, -22);
+      pCtx.stroke();
+      pCtx.restore();
+
+      pCtx.fillStyle = '#fed7aa';
+      pCtx.beginPath();
+      pCtx.arc(cx - 25, cy - 15 - breath, 10, 0, Math.PI * 2);
+      pCtx.fill();
+    }
+
+    let lastTime = 0;
+    function render(timestamp) {
+      const dt = (timestamp - lastTime) / 1000 || 0.016;
+      lastTime = timestamp;
+
+      const w = canvas.getBoundingClientRect().width;
+      const h = canvas.getBoundingClientRect().height;
+
+      const targetP = currentAmount / targetAmount;
+      visualProgress += (targetP - visualProgress) * 0.06;
+
+      document.getElementById('amount-text').innerText = `${Math.floor(visualProgress * targetAmount).toLocaleString()}`;
+      document.getElementById('percent-text').innerText = `${(visualProgress * 100).toFixed(1)}%`;
+      document.getElementById('bar-fill').style.width = `${visualProgress * 100}%`;
+
+      ctx.clearRect(0, 0, w, h);
+
+      if (isCloseUp) {
+        renderPortrait(timestamp);
+      }
+
+      // 1. SKY GRADIENT
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      if (visualProgress < 0.4) {
+        skyGrad.addColorStop(0, '#020617');
+        skyGrad.addColorStop(0.6, '#0f172a');
+        skyGrad.addColorStop(1, '#1e1b4b');
+      } else {
+        skyGrad.addColorStop(0, '#0f172a');
+        skyGrad.addColorStop(0.4, '#312e81');
+        skyGrad.addColorStop(0.75, '#b45309');
+        skyGrad.addColorStop(1, '#fde68a');
+      }
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. DRIFTING CLOUDS
+      ctx.fillStyle = visualProgress > 0.4 ? 'rgba(254, 240, 138, 0.25)' : 'rgba(255, 255, 255, 0.12)';
+      clouds.forEach(c => {
+        c.x += c.speed * dt;
+        if (c.x > w + 100) c.x = -100;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.size, 0, Math.PI * 2);
+        ctx.arc(c.x + c.size * 0.6, c.y - c.size * 0.2, c.size * 0.7, 0, Math.PI * 2);
+        ctx.arc(c.x - c.size * 0.6, c.y + c.size * 0.1, c.size * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 3. BIRDS 🕊️
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      birds.forEach(b => {
+        b.x += b.speed * dt;
+        b.wing += dt * 8;
+        if (b.x > w + 50) b.x = -50;
+        const wingY = Math.sin(b.wing) * 6;
+        ctx.beginPath();
+        ctx.moveTo(b.x - 8, b.y + wingY);
+        ctx.lineTo(b.x, b.y);
+        ctx.lineTo(b.x + 8, b.y + wingY);
+        ctx.stroke();
+      });
+
+      // 4. DIVINE SUN & GOD RAYS
+      const sunX = w * 0.85;
+      const sunY = h * 0.22;
+
+      ctx.save();
+      ctx.translate(sunX, sunY);
+      ctx.rotate(timestamp * 0.0003);
+      for (let r = 0; r < 8; r++) {
+        ctx.rotate(Math.PI / 4);
+        ctx.fillStyle = `rgba(251, 191, 36, ${0.05 + visualProgress * 0.08})`;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-40, 400);
+        ctx.lineTo(40, 400);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+
+      const sunGlow = ctx.createRadialGradient(sunX, sunY, 15, sunX, sunY, 140 + visualProgress * 80);
+      sunGlow.addColorStop(0, `rgba(254, 240, 138, ${0.5 + visualProgress * 0.5})`);
+      sunGlow.addColorStop(0.5, `rgba(245, 158, 11, ${0.25 + visualProgress * 0.4})`);
+      sunGlow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+      ctx.fillStyle = sunGlow;
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, 140 + visualProgress * 80, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 5. MOUNTAINS
+      ctx.fillStyle = visualProgress > 0.4 ? '#4338ca' : '#1e1b4b';
+      ctx.beginPath();
+      ctx.moveTo(w * 0.1, h);
+      ctx.lineTo(w * 0.45, h * 0.4);
+      ctx.lineTo(w * 0.8, h);
+      ctx.fill();
+
+      const mountainGrad = ctx.createLinearGradient(0, h * 0.3, 0, h);
+      if (visualProgress > 0.5) {
+        mountainGrad.addColorStop(0, '#15803d');
+        mountainGrad.addColorStop(0.4, '#166534');
+        mountainGrad.addColorStop(1, '#052e16');
+      } else {
+        mountainGrad.addColorStop(0, '#475569');
+        mountainGrad.addColorStop(0.4, '#334155');
+        mountainGrad.addColorStop(1, '#0f172a');
+      }
+      ctx.fillStyle = mountainGrad;
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      ctx.lineTo(0, getMountainY(0, w, h));
+      for (let x = 0; x <= w; x += 8) {
+        ctx.lineTo(x, getMountainY(x, w, h));
+      }
+      ctx.lineTo(w, h);
+      ctx.closePath();
+      ctx.fill();
+
+      // 6. SUMMIT CHURCH
+      const summitX = w * 0.88;
+      const summitY = getMountainY(summitX, w, h);
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(summitX - 12, summitY - 55, 50, 55);
+
+      ctx.fillStyle = '#78350f';
+      ctx.beginPath();
+      ctx.arc(summitX + 13, summitY - 20, 8, Math.PI, 0);
+      ctx.lineTo(summitX + 21, summitY);
+      ctx.lineTo(summitX + 5, summitY);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(summitX + 13, summitY - 55, 18, Math.PI, 0);
+      ctx.fill();
+
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(summitX + 13, summitY - 73);
+      ctx.lineTo(summitX + 13, summitY - 90);
+      ctx.moveTo(summitX + 6, summitY - 82);
+      ctx.lineTo(summitX + 20, summitY - 82);
+      ctx.stroke();
+
+      // 7. PILGRIM & CROSS ON MOUNTAIN PATH
+      const pilgrim = getPilgrimPos();
+      const walkBob = Math.sin(timestamp * 0.008) * (visualProgress < 0.99 ? 3.5 : 0.6);
+      const capeSway = Math.sin(timestamp * 0.006) * 5;
+      const px = pilgrim.x;
+      const py = pilgrim.y + walkBob;
+
+      // Divine Spot Light
+      const spotLight = ctx.createLinearGradient(px, 0, px, py);
+      spotLight.addColorStop(0, `rgba(254, 240, 138, ${0.12 + visualProgress * 0.25})`);
+      spotLight.addColorStop(1, 'rgba(244, 240, 138, 0)');
+      ctx.fillStyle = spotLight;
+      ctx.beginPath();
+      ctx.moveTo(px - 20, 0);
+      ctx.lineTo(px + 20, 0);
+      ctx.lineTo(px + 45, py);
+      ctx.lineTo(px - 45, py);
+      ctx.closePath();
+      ctx.fill();
+
+      const auraRad = 26 + visualProgress * 25;
+      const aura = ctx.createRadialGradient(px, py - 22, 6, px, py - 22, auraRad);
+      aura.addColorStop(0, `rgba(251, 191, 36, ${0.4 + visualProgress * 0.5})`);
+      aura.addColorStop(1, 'rgba(251, 191, 36, 0)');
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(px, py - 22, auraRad, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.save();
+      ctx.translate(px, py);
+
+      if (isVictory) {
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.moveTo(18, 0);
+        ctx.lineTo(18, -65);
+        ctx.moveTo(3, -48);
+        ctx.lineTo(33, -48);
+        ctx.stroke();
+
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.moveTo(-10, 0);
+        ctx.lineTo(-4, -32);
+        ctx.lineTo(4, -32);
+        ctx.lineTo(10, 0);
+        ctx.fill();
+
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.arc(0, -36, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#fed7aa';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(-4, -26);
+        ctx.lineTo(-15, -48);
+        ctx.moveTo(4, -26);
+        ctx.lineTo(15, -48);
+        ctx.stroke();
+
+      } else {
+        const angle = -0.45;
+        ctx.save();
+        ctx.rotate(angle);
+
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 7;
+        ctx.lineCap = 'square';
+        ctx.beginPath();
+        ctx.moveTo(-28, -20);
+        ctx.lineTo(40, -20);
+        ctx.moveTo(18, -38);
+        ctx.lineTo(18, -2);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.fillStyle = visualProgress > 0.5 ? '#eab308' : '#64748b';
+        ctx.beginPath();
+        ctx.moveTo(-8, -28);
+        ctx.lineTo(-20 + capeSway, -6);
+        ctx.lineTo(-4, -10);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = visualProgress > 0.5 ? '#fef08a' : '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(-10, 0);
+        ctx.lineTo(-4, -32);
+        ctx.lineTo(4, -32);
+        ctx.lineTo(10, 0);
+        ctx.fill();
+
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.arc(0, -36, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#fed7aa';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(0, -26);
+        ctx.lineTo(14, -18);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      // 8. FIREFLIES
+      fireflies.forEach(f => {
+        f.x += f.vx * dt;
+        f.y += f.vy * dt;
+        if (f.x < 0) f.x = w;
+        if (f.x > w) f.x = 0;
+        if (f.y < 0) f.y = h;
+        if (f.y > h) f.y = 0;
+        const glow = (Math.sin(timestamp * 0.004 + f.phase) + 1) * 0.5;
+        ctx.fillStyle = `rgba(254, 240, 138, ${glow * 0.8})`;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 9. GOLDEN PARTICLES
+      for (let i = goldenParticles.length - 1; i >= 0; i--) {
+        const p = goldenParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= dt * 1.2;
+
+        ctx.fillStyle = '#fef08a';
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        if (p.life <= 0) goldenParticles.splice(i, 1);
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>
