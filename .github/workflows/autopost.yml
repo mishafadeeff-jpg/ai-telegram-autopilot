@@ -2,9 +2,9 @@ name: AI Telegram Channel Autopilot 24/7
 
 on:
   schedule:
-    # Запуск каждые 4 часа круглосуточно (в 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC)
+    # Запуск каждые 4 часа круглосуточно
     - cron: '0 */4 * * *'
-  workflow_dispatch: # Возможность запустить вручную одной кнопкой
+  workflow_dispatch: # Ручной запуск
 
 jobs:
   autopost:
@@ -22,12 +22,14 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run Autopilot Post
+      - name: Run Multi-Channel Autopilot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          JOBS_CHANNEL_ID: ${{ secrets.JOBS_CHANNEL_ID }}
           CHANNEL_NAME: "⚡ AI Pulse Daily"
           CHANNEL_LINK: "https://t.me/aipulse_daily_global"
+          JOBS_CHANNEL_NAME: "💼 Remote Tech Jobs Daily"
           MAX_POSTS_PER_RUN: 1
         run: |
           python main.py --once
