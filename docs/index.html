@@ -39,7 +39,7 @@
           LUCKY WHEEL STARS
         </h1>
         <div class="text-[11px] text-slate-400 flex items-center gap-1">
-          <span id="user-display-name">Игрок</span> • <span class="text-emerald-400 font-bold">Розыгрыш активен</span>
+          <span id="user-display-name">Игрок</span> • <span class="text-emerald-400 font-bold">Официальные Stars ⭐</span>
         </div>
       </div>
     </div>
@@ -108,29 +108,29 @@
 
   </main>
 
-  <!-- ACTIONS & STARS STORE -->
+  <!-- ACTIONS & REAL TELEGRAM STARS STORE -->
   <footer class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-3 pb-1">
 
-    <!-- Card 1: Buy Spins for Telegram Stars -->
+    <!-- Card 1: Official Telegram Stars Invoices -->
     <div class="bg-slate-900/90 border border-purple-500/30 p-3.5 rounded-2xl flex flex-col justify-between shadow-lg">
       <div class="mb-2">
         <h3 class="font-bold text-amber-400 text-xs md:text-sm flex items-center gap-1.5 mb-1">
-          <span>⭐</span> Получить крутки (Stars)
+          <span>⭐</span> Официальные Telegram Stars
         </h3>
-        <p class="text-[11px] text-slate-400">Больше попыток = выше шанс сорвать куш:</p>
+        <p class="text-[11px] text-slate-400">Оплата в 1 клик через официальный счёт Telegram:</p>
       </div>
 
       <div class="grid grid-cols-3 gap-1.5">
-        <button onclick="buySpins(1, 50)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 rounded-xl text-center transition transform active:scale-95">
+        <button onclick="payWithStars('spin_1', 1)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 rounded-xl text-center transition transform active:scale-95">
           <div class="text-amber-400 font-bold text-xs">+1 🎟️</div>
           <div class="text-[10px] text-slate-300 font-mono">50 ⭐</div>
         </button>
-        <button onclick="buySpins(5, 200)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-purple-500/50 hover:border-amber-500 rounded-xl text-center transition transform active:scale-95 relative overflow-hidden">
+        <button onclick="payWithStars('spin_5', 5)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-purple-500/50 hover:border-amber-500 rounded-xl text-center transition transform active:scale-95 relative overflow-hidden">
           <div class="text-yellow-300 font-bold text-xs">+5 🎟️</div>
           <div class="text-[10px] text-slate-300 font-mono">200 ⭐</div>
           <span class="absolute top-0 right-0 bg-red-500 text-[8px] font-bold px-1 rounded-bl text-white">-20%</span>
         </button>
-        <button onclick="buySpins(15, 500)" class="p-2 bg-gradient-to-r from-amber-600 to-purple-600 rounded-xl text-center transition transform active:scale-95 shadow-md shadow-purple-500/30">
+        <button onclick="payWithStars('spin_15', 15)" class="p-2 bg-gradient-to-r from-amber-600 to-purple-600 rounded-xl text-center transition transform active:scale-95 shadow-md shadow-purple-500/30">
           <div class="text-white font-black text-xs">+15 🎟️ VIP</div>
           <div class="text-[10px] text-yellow-200 font-mono">500 ⭐</div>
         </button>
@@ -174,8 +174,15 @@
 
   </footer>
 
-  <!-- JAVASCRIPT: Wheel Physics, Audio Synth & Win Logic -->
+  <!-- JAVASCRIPT: Real Stars Invoices, Wheel Physics & Audio -->
   <script>
+    // Official Telegram Stars Invoices generated for @aipulsedaily_news_bot
+    const STARS_INVOICES = {
+      "spin_1": "https://t.me/$gn4uaMdBsEg3FwAAZkOsYe7qEKs",
+      "spin_5": "https://t.me/$1DaQhMdBsEg4FwAAnPrZJyNeIf4",
+      "spin_15": "https://t.me/$tXMGr8dBsEg5FwAAmzi6kYNMYJE"
+    };
+
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
@@ -189,7 +196,6 @@
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
-    // Sectors configuration
     const SECTORS = [
       { label: "TG Premium", sub: "3 месяца 👑", color: "#ec4899", textCol: "#ffffff", type: "premium", icon: "👑" },
       { label: "+1,000 ⭐", sub: "Джекпот!", color: "#eab308", textCol: "#020617", type: "stars_1000", icon: "🌟" },
@@ -204,14 +210,30 @@
     const numSectors = SECTORS.length;
     const arc = (2 * Math.PI) / numSectors;
 
-    // State
     let availableSpins = 1;
     let starsBalance = 0;
     let goldenTickets = 0;
     let currentAngle = 0;
     let isSpinning = false;
 
-    // Audio SFX Synth (Web Audio API)
+    // Trigger Native Telegram Stars Checkout
+    function payWithStars(packageKey, spinsCount) {
+      const invoiceUrl = STARS_INVOICES[packageKey];
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openInvoice && invoiceUrl) {
+        window.Telegram.WebApp.openInvoice(invoiceUrl, (status) => {
+          if (status === 'paid') {
+            availableSpins += spinsCount;
+            updateUI();
+            alert(`🎉 Оплата успешна! Вам начислено +${spinsCount} круток! Крутите колесо!`);
+          }
+        });
+      } else if (invoiceUrl) {
+        window.open(invoiceUrl, '_blank');
+        availableSpins += spinsCount;
+        updateUI();
+      }
+    }
+
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -278,7 +300,6 @@
         const angle = currentAngle + i * arc;
         const s = SECTORS[i];
 
-        // Draw Wedge
         ctx.fillStyle = s.color;
         ctx.beginPath();
         ctx.moveTo(cx, cy);
@@ -286,12 +307,10 @@
         ctx.lineTo(cx, cy);
         ctx.fill();
 
-        // Wedge Border
         ctx.strokeStyle = '#0f172a';
         ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        // Text & Icons
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(angle + arc / 2);
@@ -308,14 +327,12 @@
         ctx.restore();
       }
 
-      // Outer rim golden ring & bulbs
       ctx.strokeStyle = '#f59e0b';
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.arc(cx, cy, radius + 2, 0, 2 * Math.PI);
       ctx.stroke();
 
-      // Bulbs
       const numBulbs = 16;
       for (let b = 0; b < numBulbs; b++) {
         const bAngle = (b * (2 * Math.PI) / numBulbs);
@@ -347,7 +364,7 @@
       if (isSpinning) return;
 
       if (availableSpins <= 0) {
-        buySpins(1, 50);
+        payWithStars('spin_1', 1);
         return;
       }
 
@@ -355,40 +372,35 @@
       updateUI();
       isSpinning = true;
 
-      // Pick winning index with realistic thrilling odds
       const rand = Math.random();
       let winIndex = 0;
-      if (rand < 0.05) winIndex = 0; // 5% TG Premium
-      else if (rand < 0.15) winIndex = 1; // 10% 1000 Stars
-      else if (rand < 0.35) winIndex = 2; // 20% Golden Ticket
-      else if (rand < 0.55) winIndex = 3; // 20% 250 Stars
-      else if (rand < 0.70) winIndex = 4; // 15% Prank Meme
-      else if (rand < 0.85) winIndex = 5; // 15% 50 Stars
-      else if (rand < 0.95) winIndex = 6; // 10% +2 Spins
-      else winIndex = 7; // Secret Box
+      if (rand < 0.05) winIndex = 0; 
+      else if (rand < 0.15) winIndex = 1; 
+      else if (rand < 0.35) winIndex = 2; 
+      else if (rand < 0.55) winIndex = 3; 
+      else if (rand < 0.70) winIndex = 4; 
+      else if (rand < 0.85) winIndex = 5; 
+      else if (rand < 0.95) winIndex = 6; 
+      else winIndex = 7; 
 
-      // Target angle so top arrow (3 * PI / 2) lands on winIndex
-      const fullRotations = 5 + Math.floor(Math.random() * 3); // 5 to 7 full circles
+      const fullRotations = 5 + Math.floor(Math.random() * 3);
       const sectorAngle = (2 * Math.PI) / numSectors;
-      // Arrow is at -Math.PI / 2 (top)
       const targetSectorMiddle = winIndex * sectorAngle + sectorAngle / 2;
       const stopAngle = (3 * Math.PI / 2) - targetSectorMiddle + (fullRotations * 2 * Math.PI);
 
       const startAngle = currentAngle % (2 * Math.PI);
       const totalDelta = stopAngle - startAngle;
-      const duration = 4800; // ms
+      const duration = 4800;
       const startTime = performance.now();
 
       function animateSpin(now) {
         const elapsed = now - startTime;
         const t = Math.min(1, elapsed / duration);
-        // Ease-out cubic
         const easeOut = 1 - Math.pow(1 - t, 3.5);
 
         currentAngle = startAngle + totalDelta * easeOut;
         drawWheel();
 
-        // Trigger tick sound on crossing sectors
         if (Math.abs(currentAngle - lastTickAngle) > sectorAngle * 0.7) {
           playSound('tick');
           lastTickAngle = currentAngle;
@@ -409,7 +421,7 @@
       "Вы выиграли: Воздух свободы и заряд позитива! 💨😂",
       "Приз: Сертификат на 100 виртуальных обнимашек! 🫂",
       "Удача была близко! Держи золотой билет утешения! 🎟️",
-      "Батюшка передает вам благословение на следующий спин! 🕊️"
+      "Удача на вашей стороне, крутите еще! 🌟"
     ];
 
     function handleWin(sector) {
@@ -425,13 +437,13 @@
         playSound('win');
         type.innerText = "👑 СУПЕР ДЖЕКПОТ!";
         title.innerText = "Telegram Premium на 3 месяца!";
-        desc.innerText = "Поздравляем! Ваш промокод на Telegram Premium отправлен в чат!";
+        desc.innerText = "Поздравляем! Ваш выигрыш зарегистрирован в розыгрыше!";
       } else if (sector.type === 'stars_1000') {
         playSound('win');
         starsBalance += 1000;
         type.innerText = "🌟 ЗОЛОТОЙ ДЖЕКПОТ!";
         title.innerText = "+1,000 Telegram Stars ⭐";
-        desc.innerText = "1,000 Звёзд мгновенно добавлены на ваш счет!";
+        desc.innerText = "1,000 Звёзд зачислены на ваш баланс!";
       } else if (sector.type === 'stars_250') {
         playSound('win');
         starsBalance += 250;
@@ -482,23 +494,15 @@
       modal.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    function buySpins(count, starsPrice) {
-      availableSpins += count;
-      updateUI();
-      alert(`Успешно получено +${count} круток за ${starsPrice} ⭐! Крутите колесо удачи!`);
-    }
-
     function shareInviteLink() {
       const shareUrl = `https://t.me/share/url?url=https://t.me/aipulsedaily_news_bot&text=${encodeURIComponent('🎰 Крути Колесо Фортуны и выигрывай Telegram Premium и Stars бесплатно!')}`;
       window.open(shareUrl, '_blank');
-      // Grant +1 bonus spin for sharing
       setTimeout(() => {
         availableSpins += 1;
         updateUI();
       }, 1500);
     }
 
-    // Initialize
     resizeCanvas();
     updateUI();
   </script>
