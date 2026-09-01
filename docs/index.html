@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Ecosystem - Lucky Wheel, VIP Jobs & Autopilot</title>
+  <title>AI Mega Hub - Games, Tarot, Radar & B2B</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -36,34 +36,39 @@
       </div>
       <div>
         <h1 class="text-xs md:text-sm font-black bg-gradient-to-r from-amber-300 via-purple-300 to-pink-400 bg-clip-text text-transparent">
-          AI PULSE ECOSYSTEM
+          AI MEGA ECOSYSTEM
         </h1>
         <div class="text-[10px] text-slate-400 flex items-center gap-1">
-          <span id="user-display-name">Михаил</span> • <span class="text-emerald-400 font-bold">PRO Аккаунт</span>
+          <span id="user-display-name">Михаил</span> • <span class="text-emerald-400 font-bold">Система активна</span>
         </div>
       </div>
     </div>
 
-    <!-- TAB SWITCHER BUTTONS -->
-    <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
-      <button onclick="switchTab('wheel')" id="tab-btn-wheel" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white transition">
+    <!-- 5-TAB SWITCHER -->
+    <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 overflow-x-auto max-w-[230px] md:max-w-none">
+      <button onclick="switchTab('wheel')" id="tab-btn-wheel" class="px-2 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white whitespace-nowrap">
         🎰 Розыгрыш
       </button>
-      <button onclick="switchTab('jobs')" id="tab-btn-jobs" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">
-        💼 VIP Вакансии
+      <button onclick="switchTab('tarot')" id="tab-btn-tarot" class="px-2 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white whitespace-nowrap">
+        🔮 Таро
       </button>
-      <button onclick="switchTab('b2b')" id="tab-btn-b2b" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">
-        🤖 Автопилот
+      <button onclick="switchTab('radar')" id="tab-btn-radar" class="px-2 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white whitespace-nowrap">
+        🚨 Радар
+      </button>
+      <button onclick="switchTab('jobs')" id="tab-btn-jobs" class="px-2 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white whitespace-nowrap">
+        💼 $3k+ Jobs
+      </button>
+      <button onclick="switchTab('b2b')" id="tab-btn-b2b" class="px-2 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white whitespace-nowrap">
+        🤖 B2B AI
       </button>
     </div>
   </header>
 
   <!-- ==================== TAB 1: LUCKY WHEEL ==================== -->
   <div id="tab-wheel" class="w-full max-w-4xl flex flex-col items-center">
-    <!-- LIVE TICKER -->
     <div class="w-full my-2 px-3 py-1.5 bg-purple-950/40 border border-purple-800/40 rounded-xl flex items-center gap-2 text-xs text-purple-200 overflow-hidden">
-      <span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Live</span>
-      <div class="marquee-text truncate flex-1 font-mono text-[11px]" id="live-ticker">
+      <span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Live</span>
+      <div class="truncate flex-1 font-mono text-[11px]">
         🎉 @Alex_AI выиграл <b>Telegram Premium</b>! • @Misha выиграл <b>+1,000 ⭐</b> • @Elena получила <b>Золотой Билет 🎟️</b>!
       </div>
     </div>
@@ -89,7 +94,7 @@
           <div class="w-3 h-3 bg-yellow-200 rounded-full -mt-5 border border-amber-600"></div>
         </div>
 
-        <canvas id="wheel-canvas" class="w-[300px] h-[300px] md:w-[360px] md:h-[360px] rounded-full shadow-2xl border-4 border-amber-400/80 neon-pulse"></canvas>
+        <canvas id="wheel-canvas" class="w-[290px] h-[290px] md:w-[350px] md:h-[350px] rounded-full shadow-2xl border-4 border-amber-400/80 neon-pulse"></canvas>
 
         <button id="spin-center-btn" onclick="spinWheel()" class="absolute z-10 w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xs md:text-sm shadow-2xl shadow-amber-500/60 flex flex-col items-center justify-center border-4 border-slate-950 transition transform hover:scale-105 active:scale-95">
           <span class="text-base md:text-lg">🎰</span>
@@ -105,10 +110,10 @@
       </div>
     </main>
 
-    <!-- STORE & ACTIONS -->
-    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 my-2">
+    <!-- STORE -->
+    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-2.5 my-2">
       <div class="bg-slate-900/90 border border-purple-500/30 p-3 rounded-2xl flex flex-col justify-between shadow-lg">
-        <h3 class="font-bold text-amber-400 text-xs mb-1">⭐ Купить крутки (Telegram Stars):</h3>
+        <h3 class="font-bold text-amber-400 text-xs mb-1">⭐ Купить крутки (Stars):</h3>
         <div class="grid grid-cols-3 gap-1.5">
           <button onclick="payWithStars('spin_1', 1)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-center">
             <div class="text-amber-400 font-bold text-xs">+1 🎟️</div>
@@ -127,7 +132,7 @@
       </div>
 
       <div class="bg-slate-900/90 border border-purple-500/30 p-3 rounded-2xl flex flex-col justify-between shadow-lg">
-        <h3 class="font-bold text-purple-300 text-xs mb-1">👥 Бесплатные крутки за друзей:</h3>
+        <h3 class="font-bold text-purple-300 text-xs mb-1">👥 Бонус за друзей:</h3>
         <p class="text-[11px] text-slate-400 mb-2">+1 билет за каждого приглашенного:</p>
         <button onclick="shareInviteLink()" class="w-full py-2 bg-purple-600 text-white font-bold text-xs rounded-xl transition">
           📲 Пригласить друга (+1 🎟️)
@@ -135,8 +140,8 @@
       </div>
 
       <div class="bg-slate-900/90 border border-purple-500/30 p-3 rounded-2xl flex flex-col justify-between shadow-lg">
-        <h3 class="font-bold text-amber-300 text-xs mb-1">🏆 Супер-Приз Недели:</h3>
-        <p class="text-[11px] text-slate-300">Telegram Premium на 1 год среди обладателей билетов!</p>
+        <h3 class="font-bold text-amber-300 text-xs mb-1">🏆 Супер-Приз:</h3>
+        <p class="text-[11px] text-slate-300">Telegram Premium на 1 год!</p>
         <div class="text-xs bg-slate-950 p-1.5 rounded-lg text-amber-400 font-mono font-bold mt-1">
           Ваши билеты: <span id="golden-tickets-count">0 🎟️</span>
         </div>
@@ -144,22 +149,119 @@
     </div>
   </div>
 
-  <!-- ==================== TAB 2: VIP REMOTE JOBS ==================== -->
+  <!-- ==================== TAB 2: AI TAROT & ASTROLOGY ==================== -->
+  <div id="tab-tarot" class="w-full max-w-4xl hidden flex-col">
+    <div class="bg-slate-900/90 border border-purple-500/40 p-4 rounded-3xl my-2 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+        <div>
+          <span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">AI Оракул &amp; Таро</span>
+          <h2 class="text-lg md:text-xl font-black text-purple-300 mt-1">Персональный Расклад Таро и Гороскоп Судьбы</h2>
+          <p class="text-xs text-slate-300">Нейросеть расшифровывает древние арканы Таро под вашу текущую жизненную ситуацию.</p>
+        </div>
+        <div class="text-2xl">🔮</div>
+      </div>
+
+      <!-- Categories -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-3">
+        <button onclick="getTarotReading('Деньги и Богатство 💰')" class="p-3 bg-slate-950 border border-purple-500/30 hover:border-amber-400 rounded-2xl text-left transition transform active:scale-95">
+          <div class="text-base mb-1">💰 Деньги и Бизнес</div>
+          <p class="text-[11px] text-slate-400">Финансовый коридор, сделки и точки роста.</p>
+        </button>
+        <button onclick="getTarotReading('Любовь и Отношения ❤️')" class="p-3 bg-slate-950 border border-purple-500/30 hover:border-pink-400 rounded-2xl text-left transition transform active:scale-95">
+          <div class="text-base mb-1">❤️ Любовь и Отношения</div>
+          <p class="text-[11px] text-slate-400">Чувства партнера, совместимость и будущее.</p>
+        </button>
+        <button onclick="getTarotReading('Предназначение и Карьера 🌟')" class="p-3 bg-slate-950 border border-purple-500/30 hover:border-teal-400 rounded-2xl text-left transition transform active:scale-95">
+          <div class="text-base mb-1">🌟 Предназначение</div>
+          <p class="text-[11px] text-slate-400">Скрытые таланты и поворотные моменты.</p>
+        </button>
+      </div>
+
+      <!-- Live Reading Card Output -->
+      <div id="tarot-result-box" class="bg-gradient-to-r from-purple-950/60 to-slate-950 border border-purple-400/40 p-4 rounded-2xl my-3 hidden">
+        <div class="text-xs text-amber-400 font-mono font-bold uppercase mb-1" id="tarot-category-title">Расклад: Деньги</div>
+        <h3 class="text-lg font-black text-slate-100 mb-2" id="tarot-card-name">🃏 Карта: Колесо Фортуны</h3>
+        <p class="text-xs md:text-sm text-slate-200 leading-relaxed font-serif" id="tarot-card-desc">Вселенная открывает денежный коридор...</p>
+      </div>
+
+      <!-- VIP Full Reading Offer -->
+      <div class="p-3 bg-slate-950 border border-amber-500/30 rounded-2xl flex items-center justify-between mt-2">
+        <div class="text-xs text-amber-200">
+          ✨ <b>Глубокий разбор по дате рождения на 12 месяцев</b>
+        </div>
+        <button onclick="payWithStars('spin_1', 0)" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs rounded-xl transition">
+          ⭐ Получить за 50 ⭐
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 3: DEAL RADAR ==================== -->
+  <div id="tab-radar" class="w-full max-w-4xl hidden flex-col">
+    <div class="bg-slate-900/90 border border-cyan-500/40 p-4 rounded-3xl my-2 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+        <div>
+          <span class="bg-cyan-500/20 text-cyan-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Скидки 30–50%</span>
+          <h2 class="text-lg md:text-xl font-black text-cyan-400 mt-1">AI-Радар Выгодных Сделок (Авито / Авто / Гаджеты)</h2>
+          <p class="text-xs text-slate-300">Мониторинг предложений ниже рынка для перепродажи и экономии.</p>
+        </div>
+        <div class="text-2xl">🚨</div>
+      </div>
+
+      <div class="space-y-2.5 my-2">
+        <div class="bg-slate-950/80 border border-cyan-500/30 p-3 rounded-2xl flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-100">iPhone 15 Pro Max 256GB</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">-37%</span>
+            </div>
+            <div class="text-xs text-slate-400 mt-0.5">Цена: <b>72 000 ₽</b> (Рыночная: 115 000 ₽) • Выгода: <b class="text-emerald-400">+43 000 ₽</b></div>
+          </div>
+          <button onclick="alert('Контакты продавца доступны подписчикам VIP-Радара!')" class="px-3 py-1.5 bg-cyan-500 text-slate-950 font-bold text-xs rounded-xl">
+            Контакты ➔
+          </button>
+        </div>
+
+        <div class="bg-slate-950/80 border border-cyan-500/30 p-3 rounded-2xl flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-100">MacBook Pro 16 M3 Max 36GB</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">-32%</span>
+            </div>
+            <div class="text-xs text-slate-400 mt-0.5">Цена: <b>210 000 ₽</b> (Рыночная: 310 000 ₽) • Выгода: <b class="text-emerald-400">+100 000 ₽</b></div>
+          </div>
+          <button onclick="alert('Контакты продавца доступны подписчикам VIP-Радара!')" class="px-3 py-1.5 bg-cyan-500 text-slate-950 font-bold text-xs rounded-xl">
+            Контакты ➔
+          </button>
+        </div>
+      </div>
+
+      <div class="p-3 bg-gradient-to-r from-cyan-950/60 to-slate-950 border border-cyan-500/30 rounded-2xl flex items-center justify-between mt-3">
+        <div class="text-xs text-cyan-200">
+          ⚡ <b>Подпишитесь на мгновенные алерты в секунду публикации</b>
+        </div>
+        <button onclick="payWithStars('spin_5', 0)" class="px-4 py-2 bg-cyan-400 text-slate-950 font-black text-xs rounded-xl">
+          ⭐ Включить Радар (200 ⭐)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 4: VIP REMOTE JOBS ==================== -->
   <div id="tab-jobs" class="w-full max-w-4xl hidden flex-col">
     <div class="bg-slate-900/90 border border-emerald-500/40 p-4 rounded-3xl my-2 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
         <div>
           <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Закрытый Клуб</span>
           <h2 class="text-lg md:text-xl font-black text-emerald-400 mt-1">Долларовая Удалёнка ($3,000 – $10,000/мес)</h2>
-          <p class="text-xs text-slate-300">Прямой доступ к свежим вакансиям в зарубежных компаниях с оплатой в крипте и USD.</p>
+          <p class="text-xs text-slate-300">Прямой доступ к вакансиям в зарубежных компаниях с оплатой в крипте и USD.</p>
         </div>
         <div class="text-right">
-          <div class="text-xs text-slate-400">VIP Подписка</div>
+          <div class="text-xs text-slate-400">VIP Доступ</div>
           <div class="text-base font-bold text-yellow-300 font-mono">150 ⭐ / мес</div>
         </div>
       </div>
 
-      <!-- Sample VIP Vacancies -->
       <div class="space-y-2.5">
         <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-2">
           <div>
@@ -169,51 +271,24 @@
             </div>
             <div class="text-xs text-slate-400 mt-0.5">Anthropic Partner • 100% Remote (Global) • Оплата в USDT / USD</div>
           </div>
-          <button onclick="generateCoverLetter('Senior AI Python Developer')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl transition">
-            ✍️ AI-Резюме на EN
-          </button>
-        </div>
-
-        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-bold text-slate-100">Remote Technical Support Lead</span>
-              <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">$3,500 - $4,800/mo</span>
-            </div>
-            <div class="text-xs text-slate-400 mt-0.5">Global SaaS Platform • Remote • Гибкий график</div>
-          </div>
-          <button onclick="generateCoverLetter('Technical Support Lead')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl transition">
-            ✍️ AI-Резюме на EN
-          </button>
-        </div>
-
-        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-bold text-slate-100">Product Designer (UI/UX)</span>
-              <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">$4,000 - $5,500/mo</span>
-            </div>
-            <div class="text-xs text-slate-400 mt-0.5">Fintech Startup • Remote Worldwide</div>
-          </div>
-          <button onclick="generateCoverLetter('Product Designer')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl transition">
+          <button onclick="alert('🤖 AI-Составитель резюме: Идеальное сопроводительное письмо на английском готово!')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl">
             ✍️ AI-Резюме на EN
           </button>
         </div>
       </div>
 
-      <!-- VIP Upgrade Action -->
-      <div class="mt-4 p-3 bg-gradient-to-r from-emerald-950/60 via-slate-900 to-emerald-950/60 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
+      <div class="mt-4 p-3 bg-slate-950 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
         <div class="text-xs text-emerald-200">
           🔥 <b>Получите доступ к 500+ вакансиям в день</b> с прямыми контактами HR!
         </div>
-        <button onclick="payWithStars('spin_5', 0)" class="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black text-xs rounded-xl transition shadow-lg shadow-emerald-500/20">
+        <button onclick="payWithStars('spin_5', 0)" class="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black text-xs rounded-xl">
           ⭐ Оформить VIP за 150 ⭐
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== TAB 3: B2B AI AUTOPILOT ==================== -->
+  <!-- ==================== TAB 5: B2B AI AUTOPILOT ==================== -->
   <div id="tab-b2b" class="w-full max-w-4xl hidden flex-col">
     <div class="bg-slate-900/90 border border-amber-500/40 p-4 rounded-3xl my-2 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
@@ -222,58 +297,36 @@
           <h2 class="text-lg md:text-xl font-black text-amber-400 mt-1">AI-Автопилот для Telegram-каналов 24/7</h2>
           <p class="text-xs text-slate-300">Робот сам ищет тренды, пишет экспертные посты, рисует картинки и публикует без вашего участия.</p>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl">
-          🤖
-        </div>
+        <div class="text-2xl">🤖</div>
       </div>
 
-      <!-- Features Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-3">
-        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl">
-          <div class="text-base mb-1">⚡ 100% Автономность</div>
-          <p class="text-[11px] text-slate-400">Работает 24/7 на облачных серверах без перебоев и отпусков.</p>
-        </div>
-        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl">
-          <div class="text-base mb-1">🎨 AI Генерация фото</div>
-          <p class="text-[11px] text-slate-400">Каждый пост оформляется уникальным 3D-баннером или инфографикой.</p>
-        </div>
-        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl">
-          <div class="text-base mb-1">💰 Встроенная монетизация</div>
-          <p class="text-[11px] text-slate-400">Автоматически добавляет партнёрские ссылки и продаёт ваши услуги.</p>
-        </div>
-      </div>
-
-      <!-- Pricing Plans -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-2">
         <div class="bg-slate-950/90 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between">
           <div>
             <div class="text-xs font-bold text-slate-400 uppercase">Тариф «Стандарт»</div>
             <div class="text-xl font-black text-slate-100 mt-1">15 000 ₽ <span class="text-xs font-normal text-slate-400">/ под ключ</span></div>
-            <ul class="text-xs text-slate-300 space-y-1.5 my-3">
-              <li>✅ 1 Telegram-канал на полном автопилоте</li>
-              <li>✅ Публикация постов каждые 4 часа</li>
-              <li>✅ Авто-генерация уникальных картинок</li>
-              <li>✅ Бесплатный хостинг 24/7</li>
+            <ul class="text-xs text-slate-300 space-y-1 my-3">
+              <li>✅ 1 Telegram-канал на автопилоте 24/7</li>
+              <li>✅ 6 экспертных постов в день</li>
+              <li>✅ Генерация уникальных 3D-фото</li>
             </ul>
           </div>
-          <a href="https://t.me/MigOdin?text=Здравствуйте!%20Хочу%20заказать%20AI-автопилот%20для%20канала%20(Тариф%20Стандарт)" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs rounded-xl text-center transition">
+          <a href="https://t.me/MigOdin?text=Здравствуйте!%20Хочу%20заказать%20AI-автопилот%20(Стандарт)" class="w-full py-2.5 bg-slate-800 text-amber-400 font-bold text-xs rounded-xl text-center block">
             Заказать «Стандарт» ➔
           </a>
         </div>
 
-        <div class="bg-gradient-to-br from-amber-950/40 via-slate-950 to-slate-950 border border-amber-500/50 p-4 rounded-2xl flex flex-col justify-between relative overflow-hidden shadow-xl">
-          <span class="absolute top-0 right-0 bg-amber-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-bl">ХИТ ПРОДАЖ</span>
+        <div class="bg-gradient-to-br from-amber-950/40 via-slate-950 to-slate-950 border border-amber-500/50 p-4 rounded-2xl flex flex-col justify-between">
           <div>
             <div class="text-xs font-bold text-amber-300 uppercase">Тариф «Бизнес PRO»</div>
             <div class="text-xl font-black text-amber-400 mt-1">25 000 ₽ <span class="text-xs font-normal text-slate-400">/ под ключ</span></div>
-            <ul class="text-xs text-slate-300 space-y-1.5 my-3">
-              <li>✅ До 3 каналов + Telegram-бот под ключ</li>
-              <li>✅ Интерактивное Web App приложение (игры, каталог)</li>
-              <li>✅ Приём платежей в Telegram Stars и картах</li>
-              <li>✅ Индивидуальный дизайн и обучение под вашу нишу</li>
+            <ul class="text-xs text-slate-300 space-y-1 my-3">
+              <li>✅ До 3 каналов + Telegram-бот</li>
+              <li>✅ Интерактивное Mini App приложение</li>
+              <li>✅ Приём платежей в Stars и картах</li>
             </ul>
           </div>
-          <a href="https://t.me/MigOdin?text=Здравствуйте!%20Хочу%20заказать%20AI-автопилот%20(Тариф%20Бизнес%20PRO)" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 text-slate-950 font-black text-xs rounded-xl text-center transition shadow-lg shadow-amber-500/30">
+          <a href="https://t.me/MigOdin?text=Здравствуйте!%20Хочу%20заказать%20AI-автопилот%20(Бизнес%20PRO)" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs rounded-xl text-center block">
             Заказать «Бизнес PRO» ➔
           </a>
         </div>
@@ -299,29 +352,35 @@
     }
 
     function switchTab(tabId) {
-      document.getElementById('tab-wheel').classList.add('hidden');
-      document.getElementById('tab-jobs').classList.add('hidden');
-      document.getElementById('tab-b2b').classList.add('hidden');
+      ['wheel', 'tarot', 'radar', 'jobs', 'b2b'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).className = "px-2 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white whitespace-nowrap transition";
+      });
 
-      document.getElementById('tab-btn-wheel').className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
-      document.getElementById('tab-btn-jobs').className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
-      document.getElementById('tab-btn-b2b').className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (tabId === 'wheel') activeBtn.className = "px-2 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white whitespace-nowrap";
+      else if (tabId === 'tarot') activeBtn.className = "px-2 py-1 rounded-lg text-xs font-bold bg-purple-700 text-white whitespace-nowrap";
+      else if (tabId === 'radar') activeBtn.className = "px-2 py-1 rounded-lg text-xs font-bold bg-cyan-600 text-white whitespace-nowrap";
+      else if (tabId === 'jobs') activeBtn.className = "px-2 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white whitespace-nowrap";
+      else if (tabId === 'b2b') activeBtn.className = "px-2 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap";
 
-      if (tabId === 'wheel') {
-        document.getElementById('tab-wheel').classList.remove('hidden');
-        document.getElementById('tab-btn-wheel').className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white transition";
-        resizeCanvas();
-      } else if (tabId === 'jobs') {
-        document.getElementById('tab-jobs').classList.remove('hidden');
-        document.getElementById('tab-btn-jobs').className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white transition";
-      } else if (tabId === 'b2b') {
-        document.getElementById('tab-b2b').classList.remove('hidden');
-        document.getElementById('tab-btn-b2b').className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition";
-      }
+      if (tabId === 'wheel') resizeCanvas();
     }
 
-    function generateCoverLetter(role) {
-      alert(`🤖 AI-Составитель резюме: Идеальное сопроводительное письмо на английском для роли "${role}" сгенерировано и готово к отправке!`);
+    const TAROT_CARDS = [
+      { name: "Колесо Фортуны", desc: "Неожиданная удача, резкий поворот событий в вашу пользу и открытие денежного потока!" },
+      { name: "Туз Пентаклей", desc: "Материальное изобилие, получение крупной суммы, успешный запуск проекта и финансовый рост!" },
+      { name: "Солнце", desc: "Полный триумф, признание, радость, гармония и мощный прилив жизненной энергии!" },
+      { name: "Маг", desc: "Все ресурсы в ваших руках! Настало идеальное время действовать решительно." }
+    ];
+
+    function getTarotReading(cat) {
+      const card = TAROT_CARDS[Math.floor(Math.random() * TAROT_CARDS.length)];
+      document.getElementById('tarot-category-title').innerText = `Расклад: ${cat}`;
+      document.getElementById('tarot-card-name').innerText = `🃏 Карта: ${card.name}`;
+      document.getElementById('tarot-card-desc').innerText = card.desc;
+      document.getElementById('tarot-result-box').classList.remove('hidden');
     }
 
     const canvas = document.getElementById('wheel-canvas');
@@ -354,7 +413,7 @@
           if (status === 'paid') {
             availableSpins += spinsCount;
             updateUI();
-            alert(`🎉 Оплата успешна! Вам начислено +${spinsCount} круток!`);
+            alert(`🎉 Оплата успешна! Начислено +${spinsCount} круток!`);
           }
         });
       } else if (invoiceUrl) {
@@ -494,7 +553,7 @@
       if (sector.type === 'premium') {
         type.innerText = "👑 СУПЕР ДЖЕКПОТ!";
         title.innerText = "Telegram Premium на 3 месяца!";
-        desc.innerText = "Поздравляем! Ваш промокод зарегистрирован в системе!";
+        desc.innerText = "Поздравляем! Ваш выигрыш зарегистрирован!";
       } else if (sector.type === 'stars_1000') {
         starsBalance += 1000;
         type.innerText = "🌟 ЗОЛОТОЙ ДЖЕКПОТ!";
@@ -502,7 +561,7 @@
         desc.innerText = "1,000 Звёзд начислены на ваш баланс!";
       } else if (sector.type === 'stars_250') {
         starsBalance += 250;
-        type.innerText = "💎 ОТЛИЧНЫЙ КУШ!";
+        type.innerText = "💎 ВЫИГРЫШ!";
         title.innerText = "+250 Telegram Stars ⭐";
         desc.innerText = "Звёзды зачислены на ваш баланс!";
       } else if (sector.type === 'stars_50') {
