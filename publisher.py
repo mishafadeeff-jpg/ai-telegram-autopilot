@@ -3,11 +3,25 @@ import logging
 from typing import Optional
 from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL_ID
 
+try:
+    from monetization_module import get_monetized_footer
+except ImportError:
+    def get_monetized_footer():
+        return ""
+
 def send_telegram_post(text: str, image_url: Optional[str] = None) -> bool:
-    """Send post to Telegram channel with optional photo."""
+    """Send post to Telegram channel with optional photo and monetization footer."""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL_ID:
         logging.error("Telegram credentials not configured! Please check your .env file.")
         return False
+
+    # Append CPA / monetization footer
+    footer = get_monetized_footer()
+    full_text = text + footer
+
+    # If caption exceeds Telegram 1024 limit for photo, trim or send as text
+    if len(full_text) > 1020:
+        full_text = text[:950] + "..." + footer
 
     # Attempt to send with photo if image_url is present and valid
     if image_url and image_url.startswith("http"):
@@ -15,14 +29,14 @@ def send_telegram_post(text: str, image_url: Optional[str] = None) -> bool:
         payload = {
             "chat_id": TELEGRAM_CHANNEL_ID,
             "photo": image_url,
-            "caption": text,
+            "caption": full_text,
             "parse_mode": "HTML"
         }
         try:
             res = requests.post(photo_endpoint, json=payload, timeout=25)
             data = res.json()
             if data.get("ok"):
-                logging.info("Successfully published post WITH image!")
+                logging.info("Successfully published post WITH image and monetization footer!")
                 return True
             else:
                 logging.warning(f"Failed to send with image ({data.get('description')}), falling back to text.")
@@ -33,7 +47,7 @@ def send_telegram_post(text: str, image_url: Optional[str] = None) -> bool:
     text_endpoint = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": TELEGRAM_CHANNEL_ID,
-        "text": text,
+        "text": full_text,
         "parse_mode": "HTML",
         "disable_web_page_preview": False
     }
@@ -42,7 +56,7 @@ def send_telegram_post(text: str, image_url: Optional[str] = None) -> bool:
         res = requests.post(text_endpoint, json=payload, timeout=25)
         data = res.json()
         if data.get("ok"):
-            logging.info("Successfully published text post!")
+            logging.info("Successfully published text post with monetization footer!")
             return True
         else:
             logging.error(f"Telegram API Error: {data.get('description')}")

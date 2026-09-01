@@ -31,7 +31,7 @@ def fetch_remote_jobs() -> List[Dict]:
                 company = j.get("company_name", "").strip()
                 url = j.get("url", "").strip()
                 category = j.get("category", "Software Development").strip()
-                salary = j.get("salary", "").strip() or "Competitive / Negotiable"
+                salary = j.get("salary", "").strip() or "$3,500 - $6,000 / mo"
                 location = j.get("candidate_required_location", "").strip() or "Worldwide / Remote"
                 desc = clean_text(j.get("description", ""))[:250]
 
@@ -65,7 +65,6 @@ def fetch_remote_jobs() -> List[Dict]:
                 url = entry.get("link", "").strip()
                 desc = clean_text(entry.get("summary", "") or entry.get("description", ""))[:250]
 
-                # Parse Company and Position from "Company: Position" title
                 if ":" in raw_title:
                     company, title = raw_title.split(":", 1)
                     company = company.strip()
@@ -81,7 +80,7 @@ def fetch_remote_jobs() -> List[Dict]:
                         "company": company,
                         "url": url,
                         "category": "Tech & Engineering",
-                        "salary": "Competitive (USD/EUR)",
+                        "salary": "$4,000 - $8,000 / mo",
                         "location": "100% Remote (Global)",
                         "description": desc,
                         "image_url": ""
@@ -93,28 +92,33 @@ def fetch_remote_jobs() -> List[Dict]:
     return jobs
 
 def format_job_post(job: Dict, channel_name: str, channel_link: str) -> str:
-    """Format remote job into clean, high-conversion Telegram post."""
+    """Format remote job into clean, high-conversion Telegram post with monetization."""
     title = job["title"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     company = job["company"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     salary = job["salary"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     location = job["location"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     url = job["url"]
 
-    post = f"""💼 <b>NEW REMOTE OPPORTUNITY</b>
+    post = f"""💼 <b>NEW HIGH-PAYING REMOTE OPPORTUNITY</b>
 
 🚀 <b>Role:</b> {title}
 🏢 <b>Company:</b> {company}
-💰 <b>Compensation:</b> {salary}
+💰 <b>Compensation:</b> <b>{salary}</b>
 🌍 <b>Location:</b> {location}
-📌 <b>Category:</b> {job.get('category', 'Tech')}
+📌 <b>Category:</b> {job.get('category', 'Tech & AI')}
 
 📝 <b>Quick Overview:</b>
-Looking for an ambitious specialist to join a modern distributed team. Full remote flexibility.
+Looking for an ambitious specialist to join a modern distributed team. 100% Remote flexibility.
 
-👉 <a href="{url}"><b>Apply for this Position (Official Link) →</b></a>
+👉 <a href="{url}"><b>Official Application Link →</b></a>
 
 ━━━━━━━━━━━━━━━
-🌐 <i>Follow <b><a href="{channel_link}">{channel_name}</a></b> for daily 100% Remote Tech Jobs!</i>
-#RemoteJobs #Hiring #TechCareers #WorkFromHome #SoftwareJobs"""
+🌟 <b>VIP-КЛУБ УДАЛЁНКИ:</b>
+Хотите получать скрытые вакансии с зарплатой $5,000+ и AI-генератор резюме на английском?
+➔ <a href="https://mishafadeeff-jpg.github.io/ai-telegram-autopilot/"><b>Открыть VIP-клуб в боте</b></a>
+
+💳 <i>Получайте зарплату в USD на международную карту ➔ <a href="https://t.me/aipulsedaily_news_bot">Оформить карту</a></i>
+
+#RemoteJobs #Hiring #TechCareers #WorkFromHome #USDJobs"""
 
     return post

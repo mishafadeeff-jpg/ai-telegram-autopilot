@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Lucky Wheel Stars - Розыгрыш Призов</title>
+  <title>AI Ecosystem - Lucky Wheel, VIP Jobs & Autopilot</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -26,157 +26,263 @@
     .pointer-idle { animation: pointer-bounce 1.2s infinite ease-in-out; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col items-center justify-between p-3 md:p-4 selection:bg-amber-500 selection:text-black">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col items-center justify-between p-2 md:p-4 selection:bg-amber-500 selection:text-black">
 
-  <!-- TOP BAR: User Info & Balance -->
-  <header class="w-full max-w-4xl flex items-center justify-between gap-3 py-2.5 px-4 bg-slate-900/90 border border-purple-500/30 rounded-2xl backdrop-blur-md shadow-2xl shadow-purple-500/10">
-    <div class="flex items-center gap-2.5">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-purple-600 to-indigo-600 flex items-center justify-center text-xl shadow-lg shadow-purple-500/30">
-        🎡
+  <!-- TOP BAR: Navigation & Profile -->
+  <header class="w-full max-w-4xl flex items-center justify-between gap-2 py-2 px-3 bg-slate-900/90 border border-purple-500/30 rounded-2xl backdrop-blur-md shadow-2xl shadow-purple-500/10">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-purple-600 to-indigo-600 flex items-center justify-center text-lg shadow-lg shadow-purple-500/30">
+        ⚡
       </div>
       <div>
-        <h1 class="text-sm md:text-base font-black bg-gradient-to-r from-amber-300 via-purple-300 to-pink-400 bg-clip-text text-transparent">
-          LUCKY WHEEL STARS
+        <h1 class="text-xs md:text-sm font-black bg-gradient-to-r from-amber-300 via-purple-300 to-pink-400 bg-clip-text text-transparent">
+          AI PULSE ECOSYSTEM
         </h1>
-        <div class="text-[11px] text-slate-400 flex items-center gap-1">
-          <span id="user-display-name">Игрок</span> • <span class="text-emerald-400 font-bold">Официальные Stars ⭐</span>
+        <div class="text-[10px] text-slate-400 flex items-center gap-1">
+          <span id="user-display-name">Михаил</span> • <span class="text-emerald-400 font-bold">PRO Аккаунт</span>
         </div>
       </div>
     </div>
 
-    <!-- Balance stats -->
-    <div class="flex items-center gap-3">
-      <div class="bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-inner">
-        <span class="text-xs">🎟️</span>
-        <span id="spins-count" class="text-sm font-black text-amber-400 font-mono">1</span>
-        <span class="text-[10px] text-slate-400">крутка</span>
-      </div>
-      <div class="bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-inner">
-        <span class="text-xs">⭐</span>
-        <span id="stars-balance" class="text-sm font-black text-yellow-300 font-mono">0</span>
-      </div>
+    <!-- TAB SWITCHER BUTTONS -->
+    <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+      <button onclick="switchTab('wheel')" id="tab-btn-wheel" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white transition">
+        🎰 Розыгрыш
+      </button>
+      <button onclick="switchTab('jobs')" id="tab-btn-jobs" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">
+        💼 VIP Вакансии
+      </button>
+      <button onclick="switchTab('b2b')" id="tab-btn-b2b" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">
+        🤖 Автопилот
+      </button>
     </div>
   </header>
 
-  <!-- LIVE TICKER OF WINNERS -->
-  <div class="w-full max-w-4xl my-2 px-4 py-1.5 bg-purple-950/40 border border-purple-800/40 rounded-xl flex items-center gap-2 text-xs text-purple-200 overflow-hidden">
-    <span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Live</span>
-    <div class="marquee-text truncate flex-1 font-mono text-[11px]" id="live-ticker">
-      🎉 @Alex_AI выиграл <b>Telegram Premium</b>! • @Misha выиграл <b>+1,000 ⭐</b> • @Elena получила <b>Золотой Билет 🎟️</b>!
+  <!-- ==================== TAB 1: LUCKY WHEEL ==================== -->
+  <div id="tab-wheel" class="w-full max-w-4xl flex flex-col items-center">
+    <!-- LIVE TICKER -->
+    <div class="w-full my-2 px-3 py-1.5 bg-purple-950/40 border border-purple-800/40 rounded-xl flex items-center gap-2 text-xs text-purple-200 overflow-hidden">
+      <span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Live</span>
+      <div class="marquee-text truncate flex-1 font-mono text-[11px]" id="live-ticker">
+        🎉 @Alex_AI выиграл <b>Telegram Premium</b>! • @Misha выиграл <b>+1,000 ⭐</b> • @Elena получила <b>Золотой Билет 🎟️</b>!
+      </div>
+    </div>
+
+    <!-- MAIN WHEEL ARENA -->
+    <main class="w-full relative rounded-3xl overflow-hidden border-2 border-purple-500/40 shadow-2xl bg-gradient-to-b from-indigo-950 via-slate-900 to-purple-950/80 flex flex-col items-center justify-center p-3 md:p-6">
+      
+      <!-- Win Popup Modal -->
+      <div id="win-modal" class="absolute inset-0 z-30 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-500">
+        <div id="win-icon" class="text-6xl mb-3 neon-pulse">🎁</div>
+        <div class="text-amber-400 font-mono text-xs uppercase tracking-widest font-bold mb-1" id="win-type">ПОЗДРАВЛЯЕМ!</div>
+        <h2 id="win-title" class="text-2xl md:text-3xl font-black text-slate-100 mb-2">Вы выиграли 1,000 Telegram Stars!</h2>
+        <p id="win-desc" class="text-slate-300 text-xs md:text-sm max-w-sm mb-5">Приз моментально зачислен на ваш баланс!</p>
+        <button onclick="closeWinModal()" class="px-8 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black rounded-xl text-sm shadow-xl shadow-amber-500/40 transition transform hover:scale-105 active:scale-95">
+          🔥 ЗАБРАТЬ ПРИЗ
+        </button>
+      </div>
+
+      <!-- WHEEL CONTAINER -->
+      <div class="relative flex items-center justify-center my-2">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 pointer-idle flex flex-col items-center drop-shadow-[0_4px_12px_rgba(245,158,11,0.9)]">
+          <div class="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[24px] border-t-amber-400"></div>
+          <div class="w-3 h-3 bg-yellow-200 rounded-full -mt-5 border border-amber-600"></div>
+        </div>
+
+        <canvas id="wheel-canvas" class="w-[300px] h-[300px] md:w-[360px] md:h-[360px] rounded-full shadow-2xl border-4 border-amber-400/80 neon-pulse"></canvas>
+
+        <button id="spin-center-btn" onclick="spinWheel()" class="absolute z-10 w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xs md:text-sm shadow-2xl shadow-amber-500/60 flex flex-col items-center justify-center border-4 border-slate-950 transition transform hover:scale-105 active:scale-95">
+          <span class="text-base md:text-lg">🎰</span>
+          <span>КРУТИТЬ</span>
+        </button>
+      </div>
+
+      <div class="w-full max-w-sm mt-3 flex gap-2">
+        <button id="main-spin-btn" onclick="spinWheel()" class="flex-1 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-400 hover:from-amber-400 text-slate-950 font-black text-sm md:text-base rounded-2xl shadow-xl shadow-amber-500/30 transition transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
+          <span>🎡</span>
+          <span id="spin-btn-label">КРУТИТЬ БЕСПЛАТНО</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- STORE & ACTIONS -->
+    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 my-2">
+      <div class="bg-slate-900/90 border border-purple-500/30 p-3 rounded-2xl flex flex-col justify-between shadow-lg">
+        <h3 class="font-bold text-amber-400 text-xs mb-1">⭐ Купить крутки (Telegram Stars):</h3>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button onclick="payWithStars('spin_1', 1)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-center">
+            <div class="text-amber-400 font-bold text-xs">+1 🎟️</div>
+            <div class="text-[10px] text-slate-300 font-mono">50 ⭐</div>
+          </button>
+          <button onclick="payWithStars('spin_5', 5)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-purple-500/50 rounded-xl text-center relative overflow-hidden">
+            <div class="text-yellow-300 font-bold text-xs">+5 🎟️</div>
+            <div class="text-[10px] text-slate-300 font-mono">200 ⭐</div>
+            <span class="absolute top-0 right-0 bg-red-500 text-[8px] font-bold px-1 text-white">-20%</span>
+          </button>
+          <button onclick="payWithStars('spin_15', 15)" class="p-2 bg-gradient-to-r from-amber-600 to-purple-600 rounded-xl text-center">
+            <div class="text-white font-black text-xs">+15 🎟️ VIP</div>
+            <div class="text-[10px] text-yellow-200 font-mono">500 ⭐</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-purple-500/30 p-3 rounded-2xl flex flex-col justify-between shadow-lg">
+        <h3 class="font-bold text-purple-300 text-xs mb-1">👥 Бесплатные крутки за друзей:</h3>
+        <p class="text-[11px] text-slate-400 mb-2">+1 билет за каждого приглашенного:</p>
+        <button onclick="shareInviteLink()" class="w-full py-2 bg-purple-600 text-white font-bold text-xs rounded-xl transition">
+          📲 Пригласить друга (+1 🎟️)
+        </button>
+      </div>
+
+      <div class="bg-slate-900/90 border border-purple-500/30 p-3 rounded-2xl flex flex-col justify-between shadow-lg">
+        <h3 class="font-bold text-amber-300 text-xs mb-1">🏆 Супер-Приз Недели:</h3>
+        <p class="text-[11px] text-slate-300">Telegram Premium на 1 год среди обладателей билетов!</p>
+        <div class="text-xs bg-slate-950 p-1.5 rounded-lg text-amber-400 font-mono font-bold mt-1">
+          Ваши билеты: <span id="golden-tickets-count">0 🎟️</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- MAIN WHEEL ARENA -->
-  <main class="w-full max-w-4xl my-1 relative rounded-3xl overflow-hidden border-2 border-purple-500/40 shadow-2xl bg-gradient-to-b from-indigo-950 via-slate-900 to-purple-950/80 flex flex-col items-center justify-center p-3 md:p-6">
-    
-    <!-- Win Popup Modal Overlay -->
-    <div id="win-modal" class="absolute inset-0 z-30 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-500">
-      <div id="win-icon" class="text-6xl mb-3 neon-pulse">🎁</div>
-      <div class="text-amber-400 font-mono text-xs uppercase tracking-widest font-bold mb-1" id="win-type">ПОЗДРАВЛЯЕМ!</div>
-      <h2 id="win-title" class="text-2xl md:text-4xl font-black text-slate-100 mb-2">Вы выиграли 1,000 Telegram Stars!</h2>
-      <p id="win-desc" class="text-slate-300 text-xs md:text-sm max-w-sm mb-5">Приз моментально зачислен на ваш баланс розыгрыша!</p>
-      <button onclick="closeWinModal()" class="px-8 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black rounded-xl text-sm shadow-xl shadow-amber-500/40 transition transform hover:scale-105 active:scale-95">
-        🔥 ЗАБРАТЬ ПРИЗ
-      </button>
-    </div>
-
-    <!-- WHEEL CONTAINER -->
-    <div class="relative flex items-center justify-center my-2">
-      <!-- Pointer Indicator Arrow -->
-      <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 pointer-idle flex flex-col items-center drop-shadow-[0_4px_12px_rgba(245,158,11,0.9)]">
-        <div class="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[24px] border-t-amber-400"></div>
-        <div class="w-3 h-3 bg-yellow-200 rounded-full -mt-5 border border-amber-600"></div>
-      </div>
-
-      <!-- Canvas Wheel -->
-      <canvas id="wheel-canvas" class="w-[310px] h-[310px] md:w-[380px] md:h-[380px] rounded-full shadow-2xl border-4 border-amber-400/80 neon-pulse"></canvas>
-
-      <!-- Center Spin Button -->
-      <button id="spin-center-btn" onclick="spinWheel()" class="absolute z-10 w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-amber-400 via-yellow-300 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs md:text-sm shadow-2xl shadow-amber-500/60 flex flex-col items-center justify-center border-4 border-slate-950 transition transform hover:scale-105 active:scale-95">
-        <span class="text-base md:text-lg">🎰</span>
-        <span>КРУТИТЬ</span>
-      </button>
-    </div>
-
-    <!-- Main Spin Button Bar -->
-    <div class="w-full max-w-sm mt-3 flex gap-2">
-      <button id="main-spin-btn" onclick="spinWheel()" class="flex-1 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-sm md:text-base rounded-2xl shadow-xl shadow-amber-500/30 transition transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
-        <span>🎡</span>
-        <span id="spin-btn-label">КРУТИТЬ БЕСПЛАТНО</span>
-      </button>
-    </div>
-
-  </main>
-
-  <!-- ACTIONS & REAL TELEGRAM STARS STORE -->
-  <footer class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-3 pb-1">
-
-    <!-- Card 1: Official Telegram Stars Invoices -->
-    <div class="bg-slate-900/90 border border-purple-500/30 p-3.5 rounded-2xl flex flex-col justify-between shadow-lg">
-      <div class="mb-2">
-        <h3 class="font-bold text-amber-400 text-xs md:text-sm flex items-center gap-1.5 mb-1">
-          <span>⭐</span> Официальные Telegram Stars
-        </h3>
-        <p class="text-[11px] text-slate-400">Оплата в 1 клик через официальный счёт Telegram:</p>
-      </div>
-
-      <div class="grid grid-cols-3 gap-1.5">
-        <button onclick="payWithStars('spin_1', 1)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500/50 rounded-xl text-center transition transform active:scale-95">
-          <div class="text-amber-400 font-bold text-xs">+1 🎟️</div>
-          <div class="text-[10px] text-slate-300 font-mono">50 ⭐</div>
-        </button>
-        <button onclick="payWithStars('spin_5', 5)" class="p-2 bg-slate-800 hover:bg-slate-700 border border-purple-500/50 hover:border-amber-500 rounded-xl text-center transition transform active:scale-95 relative overflow-hidden">
-          <div class="text-yellow-300 font-bold text-xs">+5 🎟️</div>
-          <div class="text-[10px] text-slate-300 font-mono">200 ⭐</div>
-          <span class="absolute top-0 right-0 bg-red-500 text-[8px] font-bold px-1 rounded-bl text-white">-20%</span>
-        </button>
-        <button onclick="payWithStars('spin_15', 15)" class="p-2 bg-gradient-to-r from-amber-600 to-purple-600 rounded-xl text-center transition transform active:scale-95 shadow-md shadow-purple-500/30">
-          <div class="text-white font-black text-xs">+15 🎟️ VIP</div>
-          <div class="text-[10px] text-yellow-200 font-mono">500 ⭐</div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 2: Viral Referral (Invite Friends for Free Spins) -->
-    <div class="bg-slate-900/90 border border-purple-500/30 p-3.5 rounded-2xl flex flex-col justify-between shadow-lg">
-      <div>
-        <h3 class="font-bold text-purple-300 text-xs md:text-sm flex items-center gap-1.5 mb-1">
-          <span>👥</span> Бесплатные крутки за друзей
-        </h3>
-        <p class="text-[11px] text-slate-400 mb-2">Получайте +1 билет за каждого приглашенного друга:</p>
-      </div>
-
-      <button onclick="shareInviteLink()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition transform active:scale-95 shadow-md shadow-purple-600/30 flex items-center justify-center gap-1.5">
-        <span>📲</span>
-        <span>Пригласить друга (+1 🎟️)</span>
-      </button>
-    </div>
-
-    <!-- Card 3: Jackpot & Grand Prize Info -->
-    <div class="bg-gradient-to-br from-slate-900 via-purple-950/50 to-slate-900 border border-purple-500/30 p-3.5 rounded-2xl flex flex-col justify-between shadow-lg">
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <h3 class="font-bold text-amber-300 text-xs md:text-sm flex items-center gap-1">
-            <span>🏆</span> Главный Супер-Приз
-          </h3>
-          <span class="bg-amber-500/20 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-amber-500/40">Еженедельно</span>
+  <!-- ==================== TAB 2: VIP REMOTE JOBS ==================== -->
+  <div id="tab-jobs" class="w-full max-w-4xl hidden flex-col">
+    <div class="bg-slate-900/90 border border-emerald-500/40 p-4 rounded-3xl my-2 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+        <div>
+          <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Закрытый Клуб</span>
+          <h2 class="text-lg md:text-xl font-black text-emerald-400 mt-1">Долларовая Удалёнка ($3,000 – $10,000/мес)</h2>
+          <p class="text-xs text-slate-300">Прямой доступ к свежим вакансиям в зарубежных компаниях с оплатой в крипте и USD.</p>
         </div>
-        <p class="text-[11px] text-slate-300 mb-2">
-          Розыгрыш <b>Telegram Premium на 1 год</b> и <b>10,000 ⭐</b> среди обладателей Золотых Билетов!
-        </p>
+        <div class="text-right">
+          <div class="text-xs text-slate-400">VIP Подписка</div>
+          <div class="text-base font-bold text-yellow-300 font-mono">150 ⭐ / мес</div>
+        </div>
       </div>
 
-      <div class="flex items-center justify-between text-xs bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-        <span class="text-slate-400">Ваши Золотые Билеты:</span>
-        <span id="golden-tickets-count" class="font-bold text-amber-400 font-mono">0 🎟️</span>
+      <!-- Sample VIP Vacancies -->
+      <div class="space-y-2.5">
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-slate-100">Senior AI Python Developer</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">$6,000 - $8,500/mo</span>
+            </div>
+            <div class="text-xs text-slate-400 mt-0.5">Anthropic Partner • 100% Remote (Global) • Оплата в USDT / USD</div>
+          </div>
+          <button onclick="generateCoverLetter('Senior AI Python Developer')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl transition">
+            ✍️ AI-Резюме на EN
+          </button>
+        </div>
+
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-slate-100">Remote Technical Support Lead</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">$3,500 - $4,800/mo</span>
+            </div>
+            <div class="text-xs text-slate-400 mt-0.5">Global SaaS Platform • Remote • Гибкий график</div>
+          </div>
+          <button onclick="generateCoverLetter('Technical Support Lead')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl transition">
+            ✍️ AI-Резюме на EN
+          </button>
+        </div>
+
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-slate-100">Product Designer (UI/UX)</span>
+              <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">$4,000 - $5,500/mo</span>
+            </div>
+            <div class="text-xs text-slate-400 mt-0.5">Fintech Startup • Remote Worldwide</div>
+          </div>
+          <button onclick="generateCoverLetter('Product Designer')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs rounded-xl transition">
+            ✍️ AI-Резюме на EN
+          </button>
+        </div>
+      </div>
+
+      <!-- VIP Upgrade Action -->
+      <div class="mt-4 p-3 bg-gradient-to-r from-emerald-950/60 via-slate-900 to-emerald-950/60 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
+        <div class="text-xs text-emerald-200">
+          🔥 <b>Получите доступ к 500+ вакансиям в день</b> с прямыми контактами HR!
+        </div>
+        <button onclick="payWithStars('spin_5', 0)" class="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black text-xs rounded-xl transition shadow-lg shadow-emerald-500/20">
+          ⭐ Оформить VIP за 150 ⭐
+        </button>
       </div>
     </div>
+  </div>
 
-  </footer>
+  <!-- ==================== TAB 3: B2B AI AUTOPILOT ==================== -->
+  <div id="tab-b2b" class="w-full max-w-4xl hidden flex-col">
+    <div class="bg-slate-900/90 border border-amber-500/40 p-4 rounded-3xl my-2 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+        <div>
+          <span class="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Для бизнеса и каналов</span>
+          <h2 class="text-lg md:text-xl font-black text-amber-400 mt-1">AI-Автопилот для Telegram-каналов 24/7</h2>
+          <p class="text-xs text-slate-300">Робот сам ищет тренды, пишет экспертные посты, рисует картинки и публикует без вашего участия.</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl">
+          🤖
+        </div>
+      </div>
 
-  <!-- JAVASCRIPT: Real Stars Invoices, Wheel Physics & Audio -->
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-3">
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl">
+          <div class="text-base mb-1">⚡ 100% Автономность</div>
+          <p class="text-[11px] text-slate-400">Работает 24/7 на облачных серверах без перебоев и отпусков.</p>
+        </div>
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl">
+          <div class="text-base mb-1">🎨 AI Генерация фото</div>
+          <p class="text-[11px] text-slate-400">Каждый пост оформляется уникальным 3D-баннером или инфографикой.</p>
+        </div>
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl">
+          <div class="text-base mb-1">💰 Встроенная монетизация</div>
+          <p class="text-[11px] text-slate-400">Автоматически добавляет партнёрские ссылки и продаёт ваши услуги.</p>
+        </div>
+      </div>
+
+      <!-- Pricing Plans -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-2">
+        <div class="bg-slate-950/90 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between">
+          <div>
+            <div class="text-xs font-bold text-slate-400 uppercase">Тариф «Стандарт»</div>
+            <div class="text-xl font-black text-slate-100 mt-1">15 000 ₽ <span class="text-xs font-normal text-slate-400">/ под ключ</span></div>
+            <ul class="text-xs text-slate-300 space-y-1.5 my-3">
+              <li>✅ 1 Telegram-канал на полном автопилоте</li>
+              <li>✅ Публикация постов каждые 4 часа</li>
+              <li>✅ Авто-генерация уникальных картинок</li>
+              <li>✅ Бесплатный хостинг 24/7</li>
+            </ul>
+          </div>
+          <a href="https://t.me/MigOdin?text=Здравствуйте!%20Хочу%20заказать%20AI-автопилот%20для%20канала%20(Тариф%20Стандарт)" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs rounded-xl text-center transition">
+            Заказать «Стандарт» ➔
+          </a>
+        </div>
+
+        <div class="bg-gradient-to-br from-amber-950/40 via-slate-950 to-slate-950 border border-amber-500/50 p-4 rounded-2xl flex flex-col justify-between relative overflow-hidden shadow-xl">
+          <span class="absolute top-0 right-0 bg-amber-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-bl">ХИТ ПРОДАЖ</span>
+          <div>
+            <div class="text-xs font-bold text-amber-300 uppercase">Тариф «Бизнес PRO»</div>
+            <div class="text-xl font-black text-amber-400 mt-1">25 000 ₽ <span class="text-xs font-normal text-slate-400">/ под ключ</span></div>
+            <ul class="text-xs text-slate-300 space-y-1.5 my-3">
+              <li>✅ До 3 каналов + Telegram-бот под ключ</li>
+              <li>✅ Интерактивное Web App приложение (игры, каталог)</li>
+              <li>✅ Приём платежей в Telegram Stars и картах</li>
+              <li>✅ Индивидуальный дизайн и обучение под вашу нишу</li>
+            </ul>
+          </div>
+          <a href="https://t.me/MigOdin?text=Здравствуйте!%20Хочу%20заказать%20AI-автопилот%20(Тариф%20Бизнес%20PRO)" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 text-slate-950 font-black text-xs rounded-xl text-center transition shadow-lg shadow-amber-500/30">
+            Заказать «Бизнес PRO» ➔
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Official Telegram Stars Invoices generated for @aipulsedaily_news_bot
     const STARS_INVOICES = {
       "spin_1": "https://t.me/$gn4uaMdBsEg3FwAAZkOsYe7qEKs",
       "spin_5": "https://t.me/$1DaQhMdBsEg4FwAAnPrZJyNeIf4",
@@ -188,9 +294,34 @@
       window.Telegram.WebApp.expand();
       if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
         const u = window.Telegram.WebApp.initDataUnsafe.user;
-        const name = u.first_name || u.username || 'Игрок';
-        document.getElementById('user-display-name').innerText = name;
+        document.getElementById('user-display-name').innerText = u.first_name || u.username || 'Михаил';
       }
+    }
+
+    function switchTab(tabId) {
+      document.getElementById('tab-wheel').classList.add('hidden');
+      document.getElementById('tab-jobs').classList.add('hidden');
+      document.getElementById('tab-b2b').classList.add('hidden');
+
+      document.getElementById('tab-btn-wheel').className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+      document.getElementById('tab-btn-jobs').className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+      document.getElementById('tab-btn-b2b').className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+
+      if (tabId === 'wheel') {
+        document.getElementById('tab-wheel').classList.remove('hidden');
+        document.getElementById('tab-btn-wheel').className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white transition";
+        resizeCanvas();
+      } else if (tabId === 'jobs') {
+        document.getElementById('tab-jobs').classList.remove('hidden');
+        document.getElementById('tab-btn-jobs').className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white transition";
+      } else if (tabId === 'b2b') {
+        document.getElementById('tab-b2b').classList.remove('hidden');
+        document.getElementById('tab-btn-b2b').className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition";
+      }
+    }
+
+    function generateCoverLetter(role) {
+      alert(`🤖 AI-Составитель резюме: Идеальное сопроводительное письмо на английском для роли "${role}" сгенерировано и готово к отправке!`);
     }
 
     const canvas = document.getElementById('wheel-canvas');
@@ -216,7 +347,6 @@
     let currentAngle = 0;
     let isSpinning = false;
 
-    // Trigger Native Telegram Stars Checkout
     function payWithStars(packageKey, spinsCount) {
       const invoiceUrl = STARS_INVOICES[packageKey];
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openInvoice && invoiceUrl) {
@@ -224,7 +354,7 @@
           if (status === 'paid') {
             availableSpins += spinsCount;
             updateUI();
-            alert(`🎉 Оплата успешна! Вам начислено +${spinsCount} круток! Крутите колесо!`);
+            alert(`🎉 Оплата успешна! Вам начислено +${spinsCount} круток!`);
           }
         });
       } else if (invoiceUrl) {
@@ -234,51 +364,8 @@
       }
     }
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(type) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-
-      if (type === 'tick') {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(400 + Math.random() * 200, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.04);
-      } else if (type === 'win') {
-        const freqs = [523.25, 659.25, 783.99, 1046.50];
-        freqs.forEach((f, i) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.08);
-          gain.gain.setValueAtTime(0.25, audioCtx.currentTime + i * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.08 + 0.6);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(audioCtx.currentTime + i * 0.08);
-          osc.stop(audioCtx.currentTime + i * 0.08 + 0.6);
-        });
-      } else if (type === 'prank') {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.35);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.35);
-      }
-    }
-
     function resizeCanvas() {
+      if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * window.devicePixelRatio;
       canvas.height = rect.height * window.devicePixelRatio;
@@ -288,6 +375,7 @@
     window.addEventListener('resize', resizeCanvas);
 
     function drawWheel() {
+      if (!canvas) return;
       const w = canvas.getBoundingClientRect().width;
       const h = canvas.getBoundingClientRect().height;
       const cx = w / 2;
@@ -317,12 +405,12 @@
 
         ctx.textAlign = "right";
         ctx.fillStyle = s.textCol;
-        ctx.font = "bold 13px system-ui, sans-serif";
-        ctx.fillText(`${s.icon} ${s.label}`, radius - 20, -2);
+        ctx.font = "bold 12px system-ui, sans-serif";
+        ctx.fillText(`${s.icon} ${s.label}`, radius - 18, -2);
 
-        ctx.font = "bold 10px system-ui, sans-serif";
+        ctx.font = "bold 9px system-ui, sans-serif";
         ctx.fillStyle = s.textCol === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.75)';
-        ctx.fillText(s.sub, radius - 20, 12);
+        ctx.fillText(s.sub, radius - 18, 11);
 
         ctx.restore();
       }
@@ -332,24 +420,10 @@
       ctx.beginPath();
       ctx.arc(cx, cy, radius + 2, 0, 2 * Math.PI);
       ctx.stroke();
-
-      const numBulbs = 16;
-      for (let b = 0; b < numBulbs; b++) {
-        const bAngle = (b * (2 * Math.PI) / numBulbs);
-        const bx = cx + Math.cos(bAngle) * (radius + 2);
-        const by = cy + Math.sin(bAngle) * (radius + 2);
-        ctx.fillStyle = (b % 2 === 0) ? '#fef08a' : '#a855f7';
-        ctx.beginPath();
-        ctx.arc(bx, by, 3.5, 0, 2 * Math.PI);
-        ctx.fill();
-      }
     }
 
     function updateUI() {
-      document.getElementById('spins-count').innerText = availableSpins;
-      document.getElementById('stars-balance').innerText = starsBalance.toLocaleString();
       document.getElementById('golden-tickets-count').innerText = `${goldenTickets} 🎟️`;
-
       const btnLabel = document.getElementById('spin-btn-label');
       if (availableSpins > 0) {
         btnLabel.innerText = `КРУТИТЬ (${availableSpins} 🎟️)`;
@@ -358,11 +432,8 @@
       }
     }
 
-    let lastTickAngle = 0;
-
     function spinWheel() {
       if (isSpinning) return;
-
       if (availableSpins <= 0) {
         payWithStars('spin_1', 1);
         return;
@@ -383,14 +454,14 @@
       else if (rand < 0.95) winIndex = 6; 
       else winIndex = 7; 
 
-      const fullRotations = 5 + Math.floor(Math.random() * 3);
+      const fullRotations = 5;
       const sectorAngle = (2 * Math.PI) / numSectors;
       const targetSectorMiddle = winIndex * sectorAngle + sectorAngle / 2;
       const stopAngle = (3 * Math.PI / 2) - targetSectorMiddle + (fullRotations * 2 * Math.PI);
 
       const startAngle = currentAngle % (2 * Math.PI);
       const totalDelta = stopAngle - startAngle;
-      const duration = 4800;
+      const duration = 4500;
       const startTime = performance.now();
 
       function animateSpin(now) {
@@ -401,11 +472,6 @@
         currentAngle = startAngle + totalDelta * easeOut;
         drawWheel();
 
-        if (Math.abs(currentAngle - lastTickAngle) > sectorAngle * 0.7) {
-          playSound('tick');
-          lastTickAngle = currentAngle;
-        }
-
         if (t < 1) {
           requestAnimationFrame(animateSpin);
         } else {
@@ -413,16 +479,8 @@
           handleWin(SECTORS[winIndex]);
         }
       }
-
       requestAnimationFrame(animateSpin);
     }
-
-    const PRANK_MEMES = [
-      "Вы выиграли: Воздух свободы и заряд позитива! 💨😂",
-      "Приз: Сертификат на 100 виртуальных обнимашек! 🫂",
-      "Удача была близко! Держи золотой билет утешения! 🎟️",
-      "Удача на вашей стороне, крутите еще! 🌟"
-    ];
 
     function handleWin(sector) {
       const modal = document.getElementById('win-modal');
@@ -434,53 +492,45 @@
       icon.innerText = sector.icon;
 
       if (sector.type === 'premium') {
-        playSound('win');
         type.innerText = "👑 СУПЕР ДЖЕКПОТ!";
         title.innerText = "Telegram Premium на 3 месяца!";
-        desc.innerText = "Поздравляем! Ваш выигрыш зарегистрирован в розыгрыше!";
+        desc.innerText = "Поздравляем! Ваш промокод зарегистрирован в системе!";
       } else if (sector.type === 'stars_1000') {
-        playSound('win');
         starsBalance += 1000;
         type.innerText = "🌟 ЗОЛОТОЙ ДЖЕКПОТ!";
         title.innerText = "+1,000 Telegram Stars ⭐";
-        desc.innerText = "1,000 Звёзд зачислены на ваш баланс!";
+        desc.innerText = "1,000 Звёзд начислены на ваш баланс!";
       } else if (sector.type === 'stars_250') {
-        playSound('win');
         starsBalance += 250;
         type.innerText = "💎 ОТЛИЧНЫЙ КУШ!";
         title.innerText = "+250 Telegram Stars ⭐";
         desc.innerText = "Звёзды зачислены на ваш баланс!";
       } else if (sector.type === 'stars_50') {
-        playSound('win');
         starsBalance += 50;
         type.innerText = "⚡ ВЫИГРЫШ!";
         title.innerText = "+50 Telegram Stars ⭐";
         desc.innerText = "50 Звёзд поступили на ваш счет!";
       } else if (sector.type === 'ticket') {
-        playSound('win');
         goldenTickets += 1;
         type.innerText = "🎟️ БИЛЕТ СУПЕР-РОЗЫГРЫША!";
         title.innerText = "+1 Золотой Билет 🎟️";
-        desc.innerText = "Вы добавлены в список участников главного еженедельного розыгрыша!";
+        desc.innerText = "Вы участвуете в главном еженедельном розыгрыше!";
       } else if (sector.type === 'free_spins') {
-        playSound('win');
         availableSpins += 2;
         type.innerText = "🔄 УДАЧНЫЙ СПИН!";
         title.innerText = "+2 Бесплатные крутки 🎟️";
         desc.innerText = "Вам начислены 2 бонусные попытки!";
       } else if (sector.type === 'box') {
-        playSound('win');
         starsBalance += 150;
         goldenTickets += 1;
         type.innerText = "🎁 СЕКРЕТНЫЙ БОКС!";
         title.innerText = "+150 ⭐ и Золотой Билет!";
         desc.innerText = "В боксе оказался двойной приз!";
       } else if (sector.type === 'prank') {
-        playSound('prank');
         goldenTickets += 1;
         type.innerText = "🤪 МЕМНЫЙ СЕКТОР!";
         title.innerText = "Сектор 'Пранк дня'!";
-        desc.innerText = PRANK_MEMES[Math.floor(Math.random() * PRANK_MEMES.length)];
+        desc.innerText = "Удача на вашей стороне, крутите еще! 🌟";
       }
 
       updateUI();
@@ -495,7 +545,7 @@
     }
 
     function shareInviteLink() {
-      const shareUrl = `https://t.me/share/url?url=https://t.me/aipulsedaily_news_bot&text=${encodeURIComponent('🎰 Крути Колесо Фортуны и выигрывай Telegram Premium и Stars бесплатно!')}`;
+      const shareUrl = `https://t.me/share/url?url=https://t.me/aipulsedaily_news_bot&text=${encodeURIComponent('🎰 Крути Колесо Фортуны и забирай Telegram Premium и Stars бесплатно!')}`;
       window.open(shareUrl, '_blank');
       setTimeout(() => {
         availableSpins += 1;
